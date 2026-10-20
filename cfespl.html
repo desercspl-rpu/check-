@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joining Form</title>
+    <style>
+        /* ==========================================================================
+           Reset & Mobile Viewport Setup
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            background-color: #9FE2BF;
+            color: #0f172a;
+            line-height: 1.5;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #1e293b;
+            text-align: center;
+            margin-bottom: 18px;
+            padding: 4px 0;
+            letter-spacing: -0.02em;
+        }
+
+        /* ==========================================================================
+           Card Windows (Android Modern App Style)
+           ========================================================================== */
+        .form-window {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-window h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #eff6ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-window h4 {
+            font-size: 0.9rem;
+            color: #475569;
+            margin: 16px 0 10px 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ==========================================================================
+           Form Controls & Touch Targets
+           ========================================================================== */
+        .form-group {
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        select {
+            width: 100%;
+            height: 48px;
+            padding: 0 14px;
+            font-size: 0.95rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 12px;
+            background-color: #f8fafc;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.2s ease-in-out;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #2563eb;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        input[type="date"] {
+            display: flex;
+            align-items: center;
+        }
+
+        .grid-2, .grid-3 {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* ==========================================================================
+           Checkboxes
+           ========================================================================== */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #f1f5f9;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            transition: background 0.2s;
+        }
+
+        .checkbox-group label:has(input:checked) {
+            background-color: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #2563eb;
+        }
+
+        /* ==========================================================================
+           File Inputs
+           ========================================================================== */
+        input[type="file"] {
+            font-size: 0.82rem;
+            color: #475569;
+            padding: 8px;
+            background: #f8fafc;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 12px;
+        }
+
+        input[type="file"]::file-selector-button {
+            background: #e2e8f0;
+            border: none;
+            color: #1e293b;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        /* ==========================================================================
+           Signature Pad
+           ========================================================================== */
+        .signature-wrapper {
+            width: 100%;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        #sigCanvas {
+            width: 100%;
+            height: 140px;
+            display: block;
+            touch-action: none;
+        }
+
+        .clear-btn {
+            margin-top: 8px;
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            align-self: flex-start;
+        }
+
+        /* ==========================================================================
+           Buttons
+           ========================================================================== */
+        #submitBtn {
+            width: 100%;
+            height: 52px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            margin-top: 10px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        #submitBtn:disabled {
+            background: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* ==========================================================================
+           Custom Mobile Alert Modal
+           ========================================================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 16px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 360px;
+            border-radius: 20px;
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.9);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .modal-message {
+            font-size: 0.9rem;
+            color: #475569;
+            margin-bottom: 20px;
+            word-break: break-word;
+        }
+
+        .modal-btn {
+            width: 100%;
+            height: 44px;
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>✍️ CFESPL Application & Document Upload</h2>
+    <form id="appForm">
+        
+        <!-- Personal Details -->
+        <div class="form-window">
+            <h3>Personal Details</h3>
+            
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="currentDate">Current Date:</label>
+                    <input type="date" id="currentDate" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="branchName">Branch Name</label>
+                    <select id="branchName" required>
+                        <option value="" disabled selected>Select a branch</option>
+                        <option value="Pune">Pune</option>
+                        <option value="Goa">Goa</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required>
+                </div>
+                <div class="form-group">
+                    <label for="middleName">Middle Name (Optional)</label>
+                    <input type="text" id="middleName" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)">
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required>
+                </div>
+            </div>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label for="birthDate">Birth Date:</label>
+                    <input type="date" id="birthDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="age">Age:</label>
+                    <input type="text" id="age" readonly placeholder="Age">
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" required>
+                        <option value="" selected>Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="uan">UAN</label>
+                    <input type="number" id="uan" pattern="\d{12}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);" title="UAN must be exactly 12 numeric digits" maxlength="12" required>
+                </div>
+                <div class="form-group">
+                    <label for="esic">ESIC</label>
+                    <input type="number" id="esic" pattern="\d{10}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);" title="ESIC must be between 8 and 12 numeric digits">
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label for="maritalStatus">Marital Status</label>
+                    <select id="maritalStatus" required>
+                        <option value="" selected>Select Status</option>
+                        <option value="Married">Married</option>
+                        <option value="Unmarried">Unmarried</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="educationSelect">Education</label>
+                    <select id="educationSelect" required>
+                        <option value="" disabled selected>Select your education level</option>
+                        <option value="bachelors">Bachelor's Degree</option>
+                        <option value="Higher Secondary School">(HSC) Secondary School</option>
+                        <option value="high-school">(SSC) High School</option>
+                        <option value="9th">9th</option>
+                        <option value="8th">8th</option>
+                        <option value="7th">7th</option>
+                        <option value="6th">6th</option>
+                        <option value="5th">5th</option>
+                        <option value="4th">4th</option>
+                        <option value="3rd">3rd</option>
+                        <option value="2nd">2nd</option>
+                        <option value="1st">1st</option>
+                        <option value="NA">NA</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bloodGroup">Blood Group</label>
+                    <select id="bloodGroup">
+                        <option value="" selected>Select Blood Group</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Languages Known</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="languages" value="Marathi"> Marathi</label>
+                    <label><input type="checkbox" name="languages" value="Hindi"> Hindi</label>
+                    <label><input type="checkbox" name="languages" value="English"> English</label>
+                </div>
+                <input type="text" id="otherLanguage" placeholder="Other Manual Typing (Optional)" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)">
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label for="characterCert">Character / Conduct Certificate (If any)</label>
+                    <input type="text" id="characterCert" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)">
+                </div>
+                <div class="form-group">
+                    <label for="medicalCategory">Medical Fitness Category</label>
+                    <input type="text" id="medicalCategory" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)">
+                </div>
+                <div class="form-group">
+                    <label for="experience">Experience (in years)</label>
+                    <input type="number" id="experience" min="0" step="0.5" max="40">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="relationType">Relationship Type</label>
+                    <select id="relationType" required>
+                        <option value="" selected>Select Option</option>
+                        <option value="S">Father</option>
+                        <option value="W">Husband</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="relationName">Father / Husband Name</label>
+                    <input type="text" id="relationName" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employee Details -->
+        <div class="form-window">
+            <h3>Employee Details</h3>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="designation">Designation</label>
+                    <select id="designation" required>
+                        <option value="">Select Designation</option>
+                        <option value="BC">Bouncer</option>
+                        <option value="FSup">Facility Supervisor</option>
+                        <option value="FA">Facility Attendance</option>
+                        <option value="SSup">Security Supervisor</option>
+                        <option value="SG/LSG">Security Guard</option>
+                        <option value="HK Sup">Housekeeping Supervisor</option>
+                        <option value="HK">House Keeping</option>
+                        <option value="OB">Office Boy</option>
+                        <option value="PB">Pantry Boy</option>
+                        <option value="GMan">Gunman</option>
+                        <option value="CP/CA">Cash Peon / Assitant</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="gunman">Gunman</label>
+                    <input type="text" id="gunman" placeholder="Gun License Number">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="gunValidity">Validity (Gun / License)</label>
+                    <input type="date" id="gunValidity">
+                </div>
+                <div class="form-group">
+                    <label for="pvStatus">Police Verification</label>
+                    <select id="pvStatus">
+                        <option value="">Select Status</option>
+                        <option value="Applied">Applied</option>
+                        <option value="Valid">Valid</option>
+                    </select>
+                    <input type="date" id="pvDate" style="margin-top: 8px; display: none;">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="interviewedBy">Interviewed By</label>
+                    <select id="interviewedBy" required>
+                        <option value="">Select Interviewer</option>
+                        <option value="Atul Thombre">Mr Atul Thombre</option>
+                        <option value="Babaram Surve">Mr Babaram Surve</option>
+                        <option value="Balaji Ghodake">Mr Balaji Ghodake</option>
+                        <option value="Kaushik Acharya">Mr Kaushik Acharya</option>
+                        <option value="Manoj Palande">Mr Manoj Palande</option>
+                        <option value="Ramchandra Painkara">Mr Ramchandra Painkara</option>
+                        <option value="Sagar Navale">Mr Sagar Navale</option>
+                        <option value="Shivling Khabile">Mr Shivling Khabile</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="doj">Date of Joining</label>
+                    <input type="date" id="doj" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Address -->
+<div class="form-window">
+    <h3>Address</h3>
+    
+    <h4>Permanent Address</h4>
+    <div class="grid-3">
+        <div class="form-group"><label for="pVillage">Village:</label><input type="text" id="pVillage" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required></div>
+        <div class="form-group"><label for="pPost">Post:</label><input type="text" id="pPost" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required></div>
+        <div class="form-group"><label for="pTaluka">Taluka:</label><input type="text" id="pTaluka" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+    </div>
+    <div class="grid-3">
+        <div class="form-group"><label for="pDistrict">District:</label><input type="text" id="pDistrict" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required></div>
+        <div class="form-group"><label for="pState">State:</label><input type="text" id="pState" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required></div>
+        <div class="form-group"><label for="pPin">Pin Code:</label><input type="number" id="pPin" pattern="\d{6}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6);" required></div>
+    </div>
+    <div class="form-group">
+        <label for="pContact">Contact Number</label>
+        <input type="number" id="pContact" pattern="\d{10}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);" title="Contact number must be exactly 10 digits" required>
+    </div>
+
+    <!-- Same Address Checkbox Toggle Section -->
+    <div class="form-group" style="margin: 20px 0;">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: bold;">
+            <input type="checkbox" id="sameAddressToggle" onclick="syncAddresses()">
+            Local address is the same as permanent address
+        </label>
+    </div>
+
+    <!-- Local Address Container Window -->
+    <div id="localAddressWindow">
+        <hr style="border:0; border-top: 1px dashed #e2e8f0; margin: 16px 0;">
+
+        <h4>Local Address</h4>
+        <div class="grid-3">
+            <div class="form-group"><label for="lVillage">Village:</label><input type="text" id="lVillage" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+            <div class="form-group"><label for="lPost">Post:</label><input type="text" id="lPost" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+            <div class="form-group"><label for="lTaluka">Taluka:</label><input type="text" id="lTaluka" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+        </div>
+        <div class="grid-3">
+            <div class="form-group"><label for="lDistrict">District:</label><input type="text" id="lDistrict" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+            <div class="form-group"><label for="lState">State:</label><input type="text" id="lState" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+            <div class="form-group"><label for="lPin">Pin Code:</label><input type="number" id="lPin" pattern="\d{6}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6);"></div>
+        </div>
+        <div class="form-group">
+            <label for="lContact">Contact Number:</label>
+            <input type="number" id="lContact" pattern="\d{10}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);" title="Contact number must be exactly 10 digits">
+        </div>
+    </div>
+</div>
+
+        <!-- Guarantor & Family -->
+        <div class="form-window">
+            <h3>Guarantor & Family Details</h3>
+            
+            <h4>Guarantors</h4>
+            <div class="grid-2">
+                <div class="form-group"><label for="gName1">Name:</label><input type="text" id="gName1" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required></div>
+                <div class="form-group"><label for="gOcc1">Occupation:</label><input type="text" id="gOcc1" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required></div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group"><label for="gName2">Name:</label><input type="text" id="gName2" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required></div>
+                <div class="form-group"><label for="gOcc2">Occupation:</label><input type="text" id="gOcc2" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required></div>
+            </div>
+
+            <h4>Family Details</h4>
+            <div class="grid-3">
+                <div class="form-group"><label for="fName1">First Name:</label><input type="text" id="fName1" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required></div>
+                <div class="form-group"><label for="fBirth1">Birth Date:</label><input type="date" id="fBirth1" required></div>
+                <div class="form-group">
+                    <label for="fRel1">Relation:</label>
+                    <select id="fRel1" required>
+                        <option value="">Select Relation</option>
+                        <option value="Father">Father</option>
+                        <option value="Mother">Mother</option>
+                        <option value="Spouse">Spouse (Husband/Wife)</option>
+                        <option value="Son">Son</option>
+                        <option value="Daughter">Daughter</option>
+                        <option value="Brother">Brother</option>
+                        <option value="Sister">Sister</option>
+                        <option value="Grandfather">Grandfather</option>
+                        <option value="Grandmother">Grandmother</option>
+                        <option value="Guardian">Legal Guardian</option>
+                        <option value="Uncle">Uncle</option>
+                        <option value="Aunt">Aunt</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid-3">
+                <div class="form-group"><label for="fName2">First Name:</label><input type="text" id="fName2" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required></div>
+                <div class="form-group"><label for="fBirth2">Birth Date:</label><input type="date" id="fBirth2" required></div>
+                <div class="form-group">
+                    <label for="fRel2">Relation:</label>
+                    <select id="fRel2" required>
+                        <option value="">Select Relation</option>
+                        <option value="Father">Father</option>
+                        <option value="Mother">Mother</option>
+                        <option value="Spouse">Spouse (Husband/Wife)</option>
+                        <option value="Son">Son</option>
+                        <option value="Daughter">Daughter</option>
+                        <option value="Brother">Brother</option>
+                        <option value="Sister">Sister</option>
+                        <option value="Grandfather">Grandfather</option>
+                        <option value="Grandmother">Grandmother</option>
+                        <option value="Guardian">Legal Guardian</option>
+                        <option value="Uncle">Uncle</option>
+                        <option value="Aunt">Aunt</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Previous Employment -->
+        <div class="form-window">
+            <h3>Previous Employment History</h3>
+            <h4>Company 1</h4>
+            <div class="grid-3">
+                <div class="form-group"><label for="prevName1">Company Name:</label><input type="text" id="prevName1" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+                <div class="form-group"><label for="prevDoj1">Date of Joining:</label><input type="date" id="prevDoj1"></div>
+                <div class="form-group"><label for="prevDoe1">Date of Exit:</label><input type="date" id="prevDoe1"></div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group"><label for="prevReason1">Reason for Leaving:</label><input type="text" id="prevReason1" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+                <div class="form-group"><label for="prevRemark1">Remarks:</label><input type="text" id="prevRemark1" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+            </div>
+
+            <h4>Company 2</h4>
+            <div class="grid-3">
+                <div class="form-group"><label for="prevName2">Company Name:</label><input type="text" id="prevName2" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+                <div class="form-group"><label for="prevDoj2">Date of Joining:</label><input type="date" id="prevDoj2"></div>
+                <div class="form-group"><label for="prevDoe2">Date of Exit:</label><input type="date" id="prevDoe2"></div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group"><label for="prevReason2">Reason for Leaving:</label><input type="text" id="prevReason2" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+                <div class="form-group"><label for="prevRemark2">Remarks:</label><input type="text" id="prevRemark2" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)"></div>
+            </div>
+        </div>
+
+        <!-- Financial Details -->
+        <div class="form-window">
+            <h3>Financial & Identification Details</h3>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="aadharNumber">Aadhar Number</label>
+                    <input type="number" id="aadharNumber" pattern="\d{12}" pattern="\d{12}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);" maxlength="12" title="Aadhar Number must be exactly 12 digits" required>
+                </div>
+                <div class="form-group">
+                    <label for="aadharName">Name as per Aadhar</label>
+                    <input type="text" id="aadharName" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="panNumber">PAN Number</label>
+                    <input type="text" id="panNumber" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" maxlength="10" title="PAN must be exactly 10 characters (e.g. ABCDE1234F)" oninput="this.value = this.value.toUpperCase();" required>
+                </div>
+                <div class="form-group">
+                    <label for="panName">Name as per PAN Card</label>
+                    <input type="text" id="panName" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required>
+                </div>
+            </div>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label for="bankAccount">Bank Account Number</label>
+                    <input type="number" id="bankAccount" pattern="\d{9,18}" pattern="\d{12}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="if(this.value.length > 18) this.value = this.value.slice(0, 18);" title="Please enter a valid bank account number (digits only)" required>
+                </div>
+                <div class="form-group">
+                    <label for="ifscCode">IFSC Code</label>
+                    <input type="text" id="ifscCode" pattern="[A-Z]{4}0[A-Z0-9]{6}" maxlength="11" title="IFSC Code must be 11 characters (e.g. SBIN0001234)" oninput="this.value = this.value.toUpperCase();" required>
+                </div>
+                <div class="form-group">
+                    <label for="bankingName">Banking Name</label>
+                    <input type="text" id="bankingName" oninput="this.value = this.value.toUpperCase();" pattern="[A-Z\s]+" onkeypress="return (event.charCode < 48 || event.charCode > 57)" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signature & Attachments -->
+        <div class="form-window">
+            <h3>Signature & Attachments (Only image)</h3>
+            <div class="form-group">
+                <label>Draw Your Signature Below:</label>
+                <div class="signature-wrapper">
+                    <canvas id="sigCanvas" width="540" height="150"></canvas>
+                </div>
+                <button type="button" class="clear-btn" id="clearSigBtn">Clear Signature</button>
+            </div>
+
+            <div class="form-group"><label for="photo">Passport Size Photo:</label><input type="file" id="photo" accept="image/*" required></div>
+            <div class="form-group"><label for="poi">Aadhaar Front:</label><input type="file" id="poi" accept="image/*" required></div>
+            <div class="form-group"><label for="poa">Aadhaar Back:</label><input type="file" id="poa" accept="image/*" required></div>
+            <div class="form-group"><label for="pan">PAN Card:</label><input type="file" id="pan" accept="image/*" required></div>
+            <div class="form-group"><label for="passbook">Bank Passbook / Chequebook / Statement:</label><input type="file" id="passbook" accept="image/*" required></div>
+            <div class="form-group"><label for="pv">Police Verification:</label><input type="file" id="pv" accept="image/*"></div>
+            <div class="form-group"><label for="gunLc">Gun License:</label><input type="file" id="gunLc" accept="image/*"></div>
+            <div class="form-group"><label for="education">Highest Education:</label><input type="file" id="education" accept="image/*"></div>
+            <div class="form-group"><label for="medical">Medical Certificate:</label><input type="file" id="medical" accept="image/*"></div>
+        </div>
+
+        <button type="submit" id="submitBtn">Submit Application</button>
+    </form>
+</div>
+
+<!-- Custom Mobile Pop-Up Modal -->
+<div class="modal-overlay" id="customAlert">
+    <div class="modal-card">
+        <div class="modal-title" id="alertTitle">Notification</div>
+        <div class="modal-message" id="alertMessage">Message content goes here.</div>
+        <button type="button" class="modal-btn" onclick="closeCustomAlert()">OK</button>
+    </div>
+</div>
+
+<script>
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw0acCJSKDSoXrrj2bB5SVCSri0opiQSGYrcds9T-_--WgeDNQbpspIZG79vksf8v9OWg/exec";
+
+    // --- CUSTOM MOBILE ALERT MODAL ---
+    function showCustomAlert(message, title = "Notification") {
+        document.getElementById('alertTitle').innerText = title;
+        document.getElementById('alertMessage').innerText = message;
+        document.getElementById('customAlert').classList.add('active');
+    }
+
+    function closeCustomAlert() {
+        document.getElementById('customAlert').classList.remove('active');
+    }
+
+    function setInitialDates() {
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('currentDate').value = todayStr;
+        const dojInput = document.getElementById('doj');
+        if (dojInput) {
+            dojInput.value = todayStr;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", setInitialDates);
+
+    // --- BIRTH DATE TO AGE CALCULATION ---
+    document.getElementById('birthDate').addEventListener('change', function() {
+        const birthDate = new Date(this.value);
+        if (isNaN(birthDate)) return;
+        const todayDate = new Date();
+        let age = todayDate.getFullYear() - birthDate.getFullYear();
+        const m = todayDate.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && todayDate.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        document.getElementById('age').value = age >= 0 ? age : 0;
+    });
+
+    // --- POLICE VERIFICATION CONDITIONAL FIELD ---
+    document.getElementById('pvStatus').addEventListener('change', function() {
+        const dateInput = document.getElementById('pvDate');
+        if (this.value === 'Valid') {
+            dateInput.style.display = 'block';
+            dateInput.required = true;
+        } else {
+            dateInput.style.display = 'none';
+            dateInput.required = false;
+            dateInput.value = '';
+        }
+    });
+
+    // --- CANVAS SIGNATURE PAD LOGIC ---
+    const canvas = document.getElementById('sigCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let hasSigned = false;
+
+    ctx.strokeStyle = "#002FBE";
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
+    }
+
+    function startDrawing(e) {
+        isDrawing = true;
+        hasSigned = true;
+        const pos = getMousePos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        if (e.cancelable) e.preventDefault();
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        const pos = getMousePos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        if (e.cancelable) e.preventDefault();
+    }
+
+    function stopDrawing() { isDrawing = false; }
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('touchstart', startDrawing, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    window.addEventListener('touchend', stopDrawing);
+
+    function clearSignature() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hasSigned = false;
+    }
+
+    document.getElementById('clearSigBtn').addEventListener('click', clearSignature);
+
+    // --- FILE UTILITY ---
+    const toBase64 = file => new Promise((resolve, reject) => {
+        if (!file) resolve(null);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve({ data: reader.result, type: file.type });
+        reader.onerror = error => reject(error);
+    });
+
+    // --- FORM SUBMIT LOGIC ---
+    document.getElementById('appForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (!hasSigned) {
+            showCustomAlert("Please draw your signature before submitting.", "Required");
+            return;
+        }
+
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Disable immediately and set submitting text directly on button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = "Submitting... Please wait";
+
+        try {
+            const signatureBase64 = canvas.toDataURL("image/png");
+
+            let langArray = [];
+            document.querySelectorAll('input[name="languages"]:checked').forEach(cb => {
+                langArray.push(cb.value);
+            });
+            const manualLang = document.getElementById('otherLanguage').value.trim();
+            if (manualLang) langArray.push(manualLang);
+
+            const pvSel = document.getElementById('pvStatus').value;
+            const pvFormatted = pvSel === 'Valid' ? `Valid: ${document.getElementById('pvDate').value}` : 'Applied';
+
+            const payload = {
+                currentDate: document.getElementById('currentDate').value,
+                branchName: document.getElementById('branchName').value,
+                firstName: document.getElementById('firstName').value,
+                middleName: document.getElementById('middleName').value,
+                lastName: document.getElementById('lastName').value,
+                relationType: document.getElementById('relationType').value,
+                relationName: document.getElementById('relationName').value,
+                birthDate: document.getElementById('birthDate').value,
+                age: document.getElementById('age').value,
+                gender: document.getElementById('gender').value,
+                uan: document.getElementById('uan').value,
+                esic: document.getElementById('esic').value,
+                maritalStatus: document.getElementById('maritalStatus').value,
+                educationText: document.getElementById('educationSelect').value,
+                bloodGroup: document.getElementById('bloodGroup').value,
+                languages: langArray.join(', '),
+                characterCert: document.getElementById('characterCert').value,
+                medicalCategory: document.getElementById('medicalCategory').value,
+                experience: document.getElementById('experience').value,
+                
+                designation: document.getElementById('designation').value,
+                gunman: document.getElementById('gunman').value,
+                gunValidity: document.getElementById('gunValidity').value,
+                policeVerification: pvFormatted,
+                interviewedBy: document.getElementById('interviewedBy').value,
+                doj: document.getElementById('doj').value,
+
+                pVillage: document.getElementById('pVillage').value,
+                pPost: document.getElementById('pPost').value,
+                pTaluka: document.getElementById('pTaluka').value,
+                pDistrict: document.getElementById('pDistrict').value,
+                pState: document.getElementById('pState').value,
+                pPin: document.getElementById('pPin').value,
+                pContact: document.getElementById('pContact').value,
+
+                lVillage: document.getElementById('lVillage').value,
+                lPost: document.getElementById('lPost').value,
+                lTaluka: document.getElementById('lTaluka').value,
+                lDistrict: document.getElementById('lDistrict').value,
+                lState: document.getElementById('lState').value,
+                lPin: document.getElementById('lPin').value,
+                lContact: document.getElementById('lContact').value,
+
+                gName1: document.getElementById('gName1').value,
+                gOcc1: document.getElementById('gOcc1').value,
+                gName2: document.getElementById('gName2').value,
+                gOcc2: document.getElementById('gOcc2').value,
+
+                fName1: document.getElementById('fName1').value,
+                fBirth1: document.getElementById('fBirth1').value,
+                fRel1: document.getElementById('fRel1').value,
+                fName2: document.getElementById('fName2').value,
+                fBirth2: document.getElementById('fBirth2').value,
+                fRel2: document.getElementById('fRel2').value,
+
+                prevName1: document.getElementById('prevName1').value,
+                prevDoj1: document.getElementById('prevDoj1').value,
+                prevDoe1: document.getElementById('prevDoe1').value,
+                prevReason1: document.getElementById('prevReason1').value,
+                prevRemark1: document.getElementById('prevRemark1').value,
+                prevName2: document.getElementById('prevName2').value,
+                prevDoj2: document.getElementById('prevDoj2').value,
+                prevDoe2: document.getElementById('prevDoe2').value,
+                prevReason2: document.getElementById('prevReason2').value,
+                prevRemark2: document.getElementById('prevRemark2').value,
+
+                aadharNumber: document.getElementById('aadharNumber').value,
+                aadharName: document.getElementById('aadharName').value,
+                panNumber: document.getElementById('panNumber').value,
+                panName: document.getElementById('panName').value,
+                bankAccount: document.getElementById('bankAccount').value,
+                ifscCode: document.getElementById('ifscCode').value,
+                bankingName: document.getElementById('bankingName').value,
+
+                signature: { data: signatureBase64, type: "image/png" },
+                photo: await toBase64(document.getElementById('photo').files[0]),
+                poi: await toBase64(document.getElementById('poi').files[0]),
+                poa: await toBase64(document.getElementById('poa').files[0]),
+                pan: await toBase64(document.getElementById('pan').files[0]),
+                passbook: await toBase64(document.getElementById('passbook').files[0]),
+                pv: await toBase64(document.getElementById('pv').files[0]),
+                gunLc: await toBase64(document.getElementById('gunLc').files[0]),
+                education: await toBase64(document.getElementById('education').files[0]),
+                medical: await toBase64(document.getElementById('medical').files[0])
+            };
+
+            const response = await fetch(GAS_WEB_APP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                showCustomAlert('Success! Your PDF document has been generated.', 'Success');
+                if (result.pdfUrl) {
+                    window.open(result.pdfUrl, '_blank');
+                }
+                
+                // RESET FORM AND CANVAS UPON SUCCESSFUL SUBMISSION
+                document.getElementById('appForm').reset();
+                clearSignature();
+                document.getElementById('pvDate').style.display = 'none';
+                setInitialDates();
+
+            } else {
+                showCustomAlert('Error processing document: ' + (result.message || 'Unknown error'), 'Error');
+            }
+
+        } catch (error) {
+            console.error(error);
+            showCustomAlert('An error occurred: ' + error.message, 'Error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "Submit Application";
+        }
+    });
+</script>
+<script>
+function syncAddresses() {
+    const isChecked = document.getElementById("sameAddressToggle").checked;
+    const localWindow = document.getElementById("localAddressWindow");
+
+    const fields = [
+        ['pVillage', 'lVillage'],
+        ['pPost', 'lPost'],
+        ['pTaluka', 'lTaluka'],
+        ['pDistrict', 'lDistrict'],
+        ['pState', 'lState'],
+        ['pPin', 'lPin'],
+        ['pContact', 'lContact']
+    ];
+
+    if (isChecked) {
+        fields.forEach(([permId, localId]) => {
+            document.getElementById(localId).value = document.getElementById(permId).value;
+        });
+        localWindow.style.display = "none";
+    } else {
+        localWindow.style.display = "block";
+        fields.forEach(([permId, localId]) => {
+            document.getElementById(localId).value = "";
+        });
+    }
+}
+</script>
+    <script>
+  let wakeLock = null;
+
+// Function to request the wake lock
+async function requestWakeLock() {
+  // Check if the browser supports the Wake Lock API
+  if ('wakeLock' in navigator) {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      console.log('Wake Lock is active');
+
+      // Release target if the lock is released externally (e.g., page minimized)
+      wakeLock.addEventListener('release', () => {
+        console.log('Wake Lock was released');
+        wakeLock = null;
+      });
+    } catch (err) {
+      console.error(`${err.name}, ${err.message}`);
+    }
+  }
+}
+
+// Request the lock when the page loads
+window.addEventListener('load', () => {
+  requestWakeLock();
+});
+
+// Re-acquire the wake lock if the user switches back to the tab
+document.addEventListener('visibilitychange', async () => {
+  if (wakeLock !== null && document.visibilityState === 'visible') {
+    await requestWakeLock();
+  }
+});
+</script>
+</body>
+</html>

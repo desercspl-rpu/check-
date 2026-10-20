@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PVC Smart Card</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
+
+    body { 
+      background: linear-gradient(135deg, #4facfe, #00f2fe); 
+      min-height: 100vh;
+      padding-top: 20px; 
+      padding-bottom: 20px;
+    }
+
+    /* Form Card Container Styling */
+    .card { 
+      background: #fff;
+      border: none; 
+      border-radius: 12px; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      animation: fadeIn 0.4s ease-in-out;
+      width: 100%;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hidden { display: none !important; }
+    
+    /* Input Elements Formats */
+    input, select, textarea {
+      text-transform: uppercase;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      border-color: #4facfe !important;
+      outline: none;
+      box-shadow: 0 0 5px rgba(79,172,254,0.5) !important;
+    }
+
+    /* Premium Button Gradients */
+    .btn-gradient-primary {
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+      border: none;
+      color: #fff;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+    .btn-gradient-primary:hover:not(:disabled) {
+      opacity: 0.9;
+      color: #fff;
+    }
+
+    .btn-gradient-success {
+      background: linear-gradient(135deg, #28a745, #a3e15e);
+      border: none;
+      color: #fff;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+    .btn-gradient-success:hover:not(:disabled) {
+      opacity: 0.9;
+      color: #fff;
+    }
+
+    .back-btn-danger {
+      background: #ff4d4d;
+      color: #fff;
+      border: none;
+      transition: 0.3s;
+    }
+    .back-btn-danger:hover {
+      background: #e04343;
+      color: #fff;
+    }
+
+    /* Dynamic Pipeline Status Tracking Elements */
+    .tracking-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+      margin: 25px 0;
+      padding-left: 10px;
+    }
+
+    .tracking-step {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.3s ease;
+    }
+
+    .step-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Active Complete States */
+    .step-active {
+      color: #0056b3;
+      font-weight: 600;
+    }
+    .indicator-active {
+      background-color: #007bff;
+      color: #fff;
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+    }
+
+    /* Inactive Remaining States */
+    .step-inactive {
+      color: #adb5bd;
+    }
+    .indicator-inactive {
+      background-color: #e9ecef;
+      color: #6c757d;
+      border: 1px solid #ced4da;
+    }
+
+    /* Page Blur & Loader Overlay */
+    .blur-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .global-spinner { 
+      background: white; 
+      padding: 15px 30px; 
+      border-radius: 50px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+      font-weight: bold; 
+      display: flex;
+      align-items: center;
+    }
+
+    /* Responsive Mobile Overrides */
+    @media (max-width: 576px) {
+      body {
+        padding-top: 50px;
+        padding-bottom: 10px;
+      }
+      .container {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+      .card {
+        padding: 20px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container mb-5">
+  <div id="blur-overlay" class="blur-overlay hidden">
+    <div class="global-spinner">
+      <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+      <span>loading...</span>
+    </div>
+  </div>
+
+  <div id="employee-portal">
+    <div id="emp-win-1" class="card p-4 mx-auto" style="max-width: 440px;">
+      <h3 class="text-center mb-4 fw-bold text-dark">Apply for Smart ID</h3>
+      <div class="mb-3">
+        <label for="emp-id-input" class="form-label fw-semibold text-secondary" style="font-size: 14px;">Enter Employee ID</label>
+        <input type="text" id="emp-id-input" class="form-control form-control-lg text-center fw-bold" placeholder="Enter Your Emp ID" autofocus>
+      </div>
+      <button id="btn-verify-next" class="btn btn-gradient-primary btn-lg w-100 mt-2" onclick="verifyEmployee(this)">Next</button>
+      <div id="emp-error" class="text-danger mt-3 fw-bold text-center" style="font-size: 14px;"></div>
+    </div>
+
+    <div id="emp-win-status" class="card p-4 mx-auto hidden" style="max-width: 460px;">
+      <h3 class="text-center mb-2 fw-bold text-dark">Application Status</h3>
+      <p class="text-muted text-center small mb-3">Your profile record matches:</p>
+      
+      <div class="tracking-timeline p-2 border rounded bg-light">
+        <div class="tracking-step" id="step-1">
+          <div class="step-indicator" id="ind-1">1</div>
+          <span>Order Placed</span>
+        </div>
+        <div class="tracking-step" id="step-2">
+          <div class="step-indicator" id="ind-2">2</div>
+          <span>Prepared</span>
+        </div>
+        <div class="tracking-step" id="step-3">
+          <div class="step-indicator" id="ind-3">3</div>
+          <span>Send from Manufacture</span>
+        </div>
+        <div class="tracking-step" id="step-4">
+          <div class="step-indicator" id="ind-4">4</div>
+          <span>Received your nearest office</span>
+        </div>
+        <div class="tracking-step" id="step-5">
+          <div class="step-indicator" id="ind-5">5</div>
+          <span>Collect from your AO</span>
+        </div>
+      </div>
+
+      <button id="btn-status-return" class="btn btn-secondary w-100 mt-2" onclick="resetEmployeePortal(this)">Return to Main Frame</button>
+    </div>
+
+    <div id="emp-win-2" class="card p-4 mx-auto hidden" style="max-width: 780px;">
+      <h4 class="mb-2 fw-bold text-dark border-bottom pb-3">Validate Profile</h4>
+      <p class="text-muted small mb-4">Check the data carefully. If any details don't match actual records, click the yellow icon. <b class="text-warning">Correct</b> update fields directly.</p>
+      
+      <div id="details-container" class="row g-3"></div>
+
+      <button id="btn-proceed" class="btn btn-gradient-success btn-lg mt-4 w-100" onclick="showUploadSection(this)">Proceed & Payment</button>
+    </div>
+
+    <div id="emp-win-payment" class="card p-4 mx-auto hidden" style="max-width: 550px;">
+      <h4 class="mb-3 fw-bold text-dark border-bottom pb-3">* Required Payment</h4>
+      
+      <div class="mb-4">
+        <label class="form-label fw-semibold text-secondary small">Upload your photo</label>
+        <div id="photo-config-ui">
+          <div class="p-2 border rounded bg-light d-flex align-items-center justify-content-between">
+            <span class="text-success fw-bold small">✓ Standard: Using Existing Profile Photo</span>
+            <button type="button" class="btn btn-sm btn-warning fw-bold text-dark" onclick="activatePhotoUploadInput()">Change Photo</button>
+          </div>
+        </div>
+        <div id="photo-file-input-container" class="mt-2 hidden">
+          <input type="file" id="file-photo" class="form-control" accept="image/*">
+        </div>
+      </div>
+
+      <div class="mb-4 card p-3 bg-light border-0 shadow-none">
+        <h6 class="fw-bold text-dark">Smart Card Fee</h6>
+        <p class="text-muted small mb-3">Payment Must: <br><img src="qr.jpeg" alt="QR loading..." width="150" height="150" class="mt-1 rounded border shadow-sm"></p>
+        <label class="form-label fw-bold text-secondary small">PAYMENT STATUS?</label>
+        <div class="mt-1">
+          <div class="form-check form-check-inline me-4">
+            <input class="form-check-input" type="radio" name="paymentDone" value="yes" id="pay-yes" onchange="togglePaymentSS(true)" checked>
+            <label class="form-check-label fw-semibold" for="pay-yes" style="font-size: 14px;">Yes, Paid</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="paymentDone" value="no" id="pay-no" onchange="togglePaymentSS(false)">
+            <label class="form-check-label fw-semibold" for="pay-no" style="font-size: 14px;">No, Pending</label>
+          </div>
+        </div>
+      </div>
+
+      <div id="ss-upload-container" class="mb-4 p-3 border border-danger rounded" style="border-style: dashed !important;">
+        <label class="form-label fw-bold text-danger small">UPLOAD TRANSACTION RECEIPT *</label>
+        <input type="file" id="file-ss" class="form-control" accept="image/*">
+      </div>
+
+      <button id="btn-final-submit" class="btn btn-gradient-primary btn-lg w-100 mt-2" onclick="finalSubmit(this)">Submit Application</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwqITyfGYqNOpFpjytZJai2kmx1TN1FNuz9AAKQn3sG8faLzydb0p14rv_1kc7bLCax2Q/exec";
+
+  let currentEmpData = {};
+  let existingPhotoOpted = true; // Default initialization state
+
+  const AVAILABLE_AO_LIST = [
+    "Mr. Sagar Navale", 
+    "Mr. Atul Thombre",  
+    "Mr. Babaram Surve",
+    "Mr. Balaji Ghodake",
+    "Mr. Kaushik Achary",
+    "Mr. Manoj Palande",
+    "Mr. Ramchandra Painkara",
+    "Mr. Shivling Khabile",
+    "Mr. Suresh Math"    
+  ];
+
+  const statusOrder = [
+    "ORDER PLACED",
+    "PREPARED",
+    "SENT FROM MANUFACTURE",
+    "RECEIVED YOUR NEAREST OFFICE",
+    "COLLECT FROM YOUR AO"
+  ];
+
+  function toggleBlurLoader(shouldShow) {
+    const overlay = document.getElementById('blur-overlay');
+    if (shouldShow) {
+      overlay.classList.remove('hidden');
+    } else {
+      overlay.classList.add('hidden');
+    }
+  }
+
+  async function executeBackendQuery(postPayload) {
+    toggleBlurLoader(true);
+    try {
+      let response = await fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(postPayload)
+      });
+      let jsonParsedResult = await response.json();
+      toggleBlurLoader(false);
+      return jsonParsedResult;
+    } catch (criticalError) {
+      toggleBlurLoader(false);
+      alert("Communication Fault Encountered: " + criticalError.message);
+      throw criticalError;
+    }
+  }
+
+  async function verifyEmployee(buttonEl) {
+    // Immediate Disable Action
+    buttonEl.setAttribute('disabled', 'true');
+    buttonEl.innerText = "Processing...";
+
+    let empId = document.getElementById('emp-id-input').value.trim().toUpperCase();
+    if(!empId) {
+      buttonEl.removeAttribute('disabled');
+      buttonEl.innerText = "Next";
+      return alert("Please enter your Employee ID.");
+    }
+    
+    document.getElementById('emp-error').innerText = "";
+
+    try {
+      let apiResponse = await executeBackendQuery({ action: 'checkEmployee', empId: empId });
+      
+      if(apiResponse.status === 'EXISTS') {
+        // Immediate Transition window hiding logic
+        document.getElementById('emp-win-1').classList.add('hidden');
+        document.getElementById('emp-win-status').classList.remove('hidden');
+        updateTrackingPipeline(apiResponse.currentStatus);
+      } else if (apiResponse.status === 'MATCH') {
+        currentEmpData = apiResponse.data;
+        document.getElementById('emp-win-1').classList.add('hidden');
+        document.getElementById('emp-win-2').classList.remove('hidden');
+        buildVerificationFormInputs(apiResponse.data);
+      } else {
+        document.getElementById('emp-error').innerText = "Employee ID not found in Master Record.";
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Verification Failed: Check console for system details.");
+    } finally {
+      buttonEl.removeAttribute('disabled');
+      buttonEl.innerText = "Next";
+    }
+  }
+
+  function updateTrackingPipeline(currentStatusString) {
+    let normalizedStatus = (currentStatusString || "").trim().toUpperCase();
+    let currentTargetIndex = statusOrder.indexOf(normalizedStatus);
+    
+    if (currentTargetIndex === -1) {
+      currentTargetIndex = 0; 
+    }
+
+    for (let i = 0; i < statusOrder.length; i++) {
+      let stepElement = document.getElementById(`step-${i + 1}`);
+      let indicatorElement = document.getElementById(`ind-${i + 1}`);
+      
+      if (i <= currentTargetIndex) {
+        stepElement.className = "tracking-step step-active";
+        indicatorElement.className = "step-indicator indicator-active";
+        if (i < currentTargetIndex) {
+          indicatorElement.innerHTML = "&#10003;";
+        } else {
+          indicatorElement.innerText = i + 1;
+        }
+      } else {
+        stepElement.className = "tracking-step step-inactive";
+        indicatorElement.className = "step-indicator indicator-inactive";
+        indicatorElement.innerText = i + 1;
+      }
+    }
+  }
+
+  function buildVerificationFormInputs(profileDataset) {
+    let containerElement = document.getElementById('details-container');
+    containerElement.innerHTML = '';
+    
+    const standardFields = ['Name', 'Designation', 'Father / Husband Name', 'DOB', 'Gender', 'UAN', 'ESIC'];
+    
+    standardFields.forEach(fieldName => {
+      let resolvedValue = profileDataset[fieldName] || '';
+      let fieldHtmlSnippet = `
+        <div class="col-md-6">
+          <label class="form-label small fw-bold text-uppercase text-secondary" style="font-size: 12px;">${fieldName}</label>
+          <div class="input-group">
+            <input type="text" class="form-control form-control-md fw-semibold bg-white" id="field-${fieldName.replace(/\s+/g, '')}" value="${resolvedValue}" disabled>
+            <button class="btn btn-warning text-dark fw-bold px-3" type="button" onclick="unlockInputCorrection('${fieldName.replace(/\s+/g, '')}')">Correct</button>
+          </div>
+        </div>`;
+      containerElement.insertAdjacentHTML('beforeend', fieldHtmlSnippet);
+    });
+
+    let databaseAoValue = (profileDataset['AO Name'] || '').toString().trim();
+    
+    let dropdownOptionsHtml = `<option value="">-- SELECT AO NAME --</option>`;
+    AVAILABLE_AO_LIST.forEach(aoNameOption => {
+      let isSelected = aoNameOption.toUpperCase() === databaseAoValue.toUpperCase() ? 'selected' : '';
+      dropdownOptionsHtml += `<option value="${aoNameOption}" ${isSelected}>${aoNameOption}</option>`;
+    });
+
+    if (databaseAoValue && !AVAILABLE_AO_LIST.map(v => v.toUpperCase()).includes(databaseAoValue.toUpperCase())) {
+      dropdownOptionsHtml += `<option value="${databaseAoValue}" selected>${databaseAoValue}</option>`;
+    }
+
+    let aoFieldHtmlSnippet = `
+      <div class="col-md-6">
+        <label class="form-label small fw-bold text-uppercase text-secondary" style="font-size: 12px;">AO Name</label>
+        <div class="input-group">
+          <select class="form-select form-control-md fw-semibold bg-white" id="field-AOName" disabled>
+            ${dropdownOptionsHtml}
+          </select>
+          <button class="btn btn-warning text-dark fw-bold px-3" type="button" onclick="unlockInputCorrection('AOName')">Correct</button>
+        </div>
+      </div>`;
+    
+    containerElement.insertAdjacentHTML('beforeend', aoFieldHtmlSnippet);
+  }
+
+  function unlockInputCorrection(targetFieldKeyId) {
+    let targetedNode = document.getElementById(`field-${targetFieldKeyId}`);
+    targetedNode.removeAttribute('disabled');
+    targetedNode.classList.remove('bg-white');
+    targetedNode.style.border = "2px solid #ffc107";
+    targetedNode.focus();
+  }
+
+  function showUploadSection(buttonEl) {
+    // Immediate Click Protection Actions
+    buttonEl.setAttribute('disabled', 'true');
+    
+    // Immediate Visibility Window Swaps
+    document.getElementById('emp-win-2').classList.add('hidden');
+    document.getElementById('emp-win-payment').classList.remove('hidden');
+    
+    // Restore button functionality configuration safely 
+    buttonEl.removeAttribute('disabled');
+  }
+
+  function backToProfileValidation() {
+    document.getElementById('emp-win-payment').classList.add('hidden');
+    document.getElementById('emp-win-2').classList.remove('hidden');
+  }
+
+  function activatePhotoUploadInput() {
+    existingPhotoOpted = false;
+    document.getElementById('photo-config-ui').classList.add('hidden');
+    document.getElementById('photo-file-input-container').classList.remove('hidden');
+  }
+
+  function togglePaymentSS(displayFlagState) {
+    if(displayFlagState) {
+      document.getElementById('ss-upload-container').classList.remove('hidden');
+    } else {
+      document.getElementById('ss-upload-container').classList.add('hidden');
+    }
+  }
+
+  function resetEmployeePortal(buttonEl) {
+    if(buttonEl) {
+      buttonEl.setAttribute('disabled', 'true');
+    }
+    
+    // Core Form Fields Resets
+    document.getElementById('emp-id-input').value = '';
+    document.getElementById('file-photo').value = '';
+    document.getElementById('file-ss').value = '';
+    document.getElementById('pay-yes').checked = true;
+    
+    // UI Mode Struct Resets
+    document.getElementById('photo-config-ui').classList.remove('hidden');
+    document.getElementById('photo-file-input-container').classList.add('hidden');
+    document.getElementById('ss-upload-container').classList.remove('hidden');
+    
+    // Visibility Layer Updates
+    document.getElementById('emp-win-1').classList.remove('hidden');
+    document.getElementById('emp-win-status').classList.add('hidden');
+    document.getElementById('emp-win-2').classList.add('hidden');
+    document.getElementById('emp-win-payment').classList.add('hidden');
+    
+    existingPhotoOpted = true;
+    
+    if(buttonEl) {
+      buttonEl.removeAttribute('disabled');
+    }
+  }
+
+  async function finalSubmit(buttonEl) {
+    // Instant Lock 
+    buttonEl.setAttribute('disabled', 'true');
+    buttonEl.innerText = "Submitting Application Details...";
+
+    let targetEmpId = document.getElementById('emp-id-input').value.trim().toUpperCase();
+    let photoAssetFile = document.getElementById('file-photo').files[0];
+    let paymentVerifiedFlag = document.getElementById('pay-yes').checked;
+    let paymentReceiptFile = document.getElementById('file-ss').files[0];
+
+    let selectedAoSelector = document.getElementById('field-AOName');
+    let finalAoNameValue = selectedAoSelector ? selectedAoSelector.value.trim() : "";
+
+    if(!finalAoNameValue) {
+      buttonEl.removeAttribute('disabled');
+      buttonEl.innerText = "Submit Application";
+      return alert("Please select a valid AO Name entry to continue.");
+    }
+
+    if(!photoAssetFile && !existingPhotoOpted) {
+      buttonEl.removeAttribute('disabled');
+      buttonEl.innerText = "Submit Application";
+      return alert("Please upload a passport size photo or process with current settings.");
+    }
+    
+    if(paymentVerifiedFlag && !paymentReceiptFile) {
+      buttonEl.removeAttribute('disabled');
+      buttonEl.innerText = "Submit Application";
+      return alert("Please upload your payment verification receipt screenshot.");
+    }
+
+    try {
+      let processingLogAdjustments = [];
+      const processingKeys = ['Name', 'Designation', 'Father / Husband Name', 'DOB', 'Gender', 'UAN', 'ESIC'];
+      
+      processingKeys.forEach(key => {
+        let elementId = `field-${key.replace(/\s+/g, '')}`; 
+        let elementNode = document.getElementById(elementId);
+        
+        if (elementNode) {
+          let updatedUserValue = elementNode.value.trim();
+          let originalValue = (currentEmpData[key] || '').toString().trim();
+          
+          if(updatedUserValue.toUpperCase() !== originalValue.toUpperCase()) {
+            processingLogAdjustments.push(`[${key} changed to: ${updatedUserValue}]`);
+          }
+        }
+      });
+
+      let originalAoValue = (currentEmpData['AO Name'] || '').toString().trim();
+      if(finalAoNameValue.toUpperCase() !== originalAoValue.toUpperCase()) {
+        processingLogAdjustments.push(`[AO Name changed to: ${finalAoNameValue}]`);
+      }
+
+      let networkSubmissionPayload = {
+        empId: targetEmpId,
+        aoName: finalAoNameValue, 
+        corrections: processingLogAdjustments.join(' | ') || 'None',
+        photoBase64: null, photoType: null,
+        ssBase64: null, ssType: null
+      };
+
+      const convertAssetToBase64 = (targetFileObject) => new Promise((resolve, reject) => {
+        let fileStreamingReader = new FileReader();
+        fileStreamingReader.onload = () => resolve(fileStreamingReader.result);
+        fileStreamingReader.onerror = (err) => reject(err);
+        fileStreamingReader.readAsDataURL(targetFileObject);
+      });
+
+      if(photoAssetFile) { 
+        networkSubmissionPayload.photoBase64 = await convertAssetToBase64(photoAssetFile); 
+        networkSubmissionPayload.photoType = photoAssetFile.type; 
+      }
+      if(paymentVerifiedFlag && paymentReceiptFile) { 
+        networkSubmissionPayload.ssBase64 = await convertAssetToBase64(paymentReceiptFile); 
+        networkSubmissionPayload.ssType = paymentReceiptFile.type; 
+      }
+
+      let submitApiResponse = await executeBackendQuery({ action: 'submitApplication', payload: networkSubmissionPayload });
+      
+      if(submitApiResponse && submitApiResponse.success) {
+        alert("Application Structure Submitted Successfully!");
+        resetEmployeePortal(null);
+      } else {
+        alert("Submission Failed: " + (submitApiResponse.message || "Unknown error occurred on Google."));
+      }
+    } catch (e) {
+      console.error(e);
+      alert("An unexpected processing fault occurred: " + e.message);
+    } finally {
+      buttonEl.innerText = "Submit Application";
+      buttonEl.removeAttribute('disabled');
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#026597',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Integrated Page Styles -->
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+
+    <div>
+        <!-- Navigation Bar -->
+        <header class="navbar bg-white border-b border-slate-200 shadow-sm sticky top-0 z-50">
+            <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
+                <div class="navbar-brand flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-700 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                        E
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">Employee Support</h1>
+                </div>
+                <nav class="nav-links flex items-center space-x-6">
+                    <a href="contac.html" class="inline-flex items-center justify-center px-4 py-2 text-sm font-bold text-white bg-brand-600 hover:bg-brand-800 rounded-lg transition-colors shadow-sm">Contact Us</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Section -->
+        <section class="hero-section bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white py-14 px-4 sm:px-6 lg:px-8 text-center relative overflow-hidden">
+            <div class="container max-w-4xl mx-auto relative z-10">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4">How can we help you today?</h2>
+                <p id="datetime" class="inline-flex items-center px-4 py-2 rounded-full bg-slate-800/90 border border-slate-700 text-slate-200 text-xs sm:text-sm font-semibold shadow-inner"></p>
+            </div>
+        </section>
+
+        <!-- Action Cards Grid -->
+        <main class="container content-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            
+            <!-- Police Verification Card -->
+            <div class="card glass-card rounded-2xl p-6 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-t-sky-600">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-sky-100 text-brand-600 flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Police Verification</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6 font-medium">Kindly verify the police verification from Checkmate Services.</p>
+                </div>
+                <a href="pccverification.html" class="btn-primary w-full inline-flex items-center justify-center px-4 py-3 text-sm font-bold text-white bg-brand-600 hover:bg-brand-800 rounded-xl shadow-md transition-all duration-200">Click here</a>
+            </div>
+
+            <!-- Smart Card Card -->
+            <div class="card glass-card rounded-2xl p-6 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-t-indigo-600">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 012-2h2a2 2 0 012 2v1m-6 0h6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Smart Card</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6 font-medium">You can apply for a smart PVC ID card.</p>
+                </div>
+                <a href="pvcid.html" class="btn-primary w-full inline-flex items-center justify-center px-4 py-3 text-sm font-bold text-white bg-brand-600 hover:bg-brand-800 rounded-xl shadow-md transition-all duration-200">Request</a>
+            </div>
+
+            <!-- Attendance Card -->
+            <div class="card glass-card rounded-2xl p-6 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-t-emerald-600">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Attendance</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6 font-medium">You can upload the attendance here.</p>
+                </div>
+                <a href="https://checkmateindia-my.sharepoint.com/:f:/g/personal/pune_ops_checkmateservices_com/IgAm-QCtbIZ8R64BYJH73MszAe517hBnzWYPdA9i5unmCgc?e=PFleDb" target="_blank" rel="noopener noreferrer" class="btn-primary w-full inline-flex items-center justify-center px-4 py-3 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md transition-all duration-200">Login</a>
+            </div>
+
+            <!-- Joining Application Card -->
+            <div class="card glass-card rounded-2xl p-6 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-t-amber-500">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Joining Application</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4 font-medium">You can submit your application for joining here.</p>
+                </div>
+                <div class="dropdown relative group">
+                    <button class="btn-primary w-full inline-flex items-center justify-between px-4 py-3 text-sm font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl shadow-md transition-all duration-200">
+                        <span>Application</span>
+                        <svg class="w-4 h-4 ml-2 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="dropdown-content absolute bottom-full left-0 right-0 mb-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 z-20 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden">
+                        <a href="cspl.html" class="block px-4 py-3 text-sm font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 border-b border-slate-100 transition-colors">CSPL</a>
+                        <a href="cfespl.html" class="block px-4 py-3 text-sm font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition-colors">CFESPL</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pay Slips Card -->
+            <div class="card glass-card rounded-2xl p-6 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-t-purple-600">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Pay Slips</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6 font-medium">Download your monthly salary pay slips.</p>
+                </div>
+                <a href="slips.html" class="btn-primary w-full inline-flex items-center justify-center px-4 py-3 text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-md transition-all duration-200">View Slips</a>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-slate-900 text-slate-400 text-sm border-t border-slate-800 mt-auto">
+            <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center font-medium">
+                <p>&copy; <span id="currentYear"></span> Checkmate Services Private Limited</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDateTime = `Today is: ${now.toLocaleDateString(undefined, options)}, Time: ${now.toLocaleTimeString()}`;
+            document.getElementById("datetime").innerText = formattedDateTime;
+        }
+
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // Dynamically set current year in footer
+        document.getElementById("currentYear").textContent = new Date().getFullYear();
+    </script>    
+</body>
+</html>
