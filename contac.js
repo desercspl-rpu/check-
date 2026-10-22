@@ -124,7 +124,7 @@ async function handleFormSubmit(e) {
     
     // STRICT VALIDATION RULE: Check if employee was selected from database list
     if (!selectedEmployeeRecord || selectedEmployeeRecord.employeeId !== employeeIdInput) {
-        errorEl.innerText = "Error: Please select a valid employee from the dropdown list. Manual entry is not allowed.";
+        errorEl.innerText = "Error: Please select a valid employee from the dropdown list.";
         errorEl.classList.remove('hidden');
         return;
     }
