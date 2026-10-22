@@ -1,6 +1,6 @@
 // Employee Data Database store
 const employeeDatabase = [
-    { employeeId: "EMP/PNE007478", fullName: "DIGAMBER  MOKANPALLE", mobileNumber: "+918888004151", designation: "SECURITY GUARD", companyName: "ICICI Bank Ltd." },
+{ employeeId: "EMP/PNE007478", fullName: "DIGAMBER  MOKANPALLE", mobileNumber: "+918888004151", designation: "SECURITY GUARD", companyName: "ICICI Bank Ltd." },
 { employeeId: "EMP/PNE011716", fullName: "DHONDUBA VIJAY KANKHAR", mobileNumber: "+919623964261", designation: "SECURITY GUARD", companyName: "ICICI Bank Ltd." },
 { employeeId: "EMP/PUN00041", fullName: "HEMANT DHONDIRAM HUJBAND", mobileNumber: "+919595444406", designation: "SECURITY GUARD", companyName: "ICICI Bank Ltd." },
 { employeeId: "EMP/PUN00980", fullName: "VIJAY SAMPAT BHOSALE", mobileNumber: "+918329541335", designation: "SECURITY GUARD", companyName: "ICICI Bank Ltd." },
