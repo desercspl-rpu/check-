@@ -109,8 +109,8 @@
         <!-- Demo Credentials Reference -->
         <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 text-xs space-y-2">
           <div class="font-semibold text-blue-700 flex items-center justify-between">
-            <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i> How to make Password:</span>
-            <!--<span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">Test</span>-->
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i> Demo Credentials:</span>
+            <!--<span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">Testing</span>-->
           </div>
           <div class="space-y-1 text-[11px] text-slate-600">
             <div style="display: grid; grid-template-columns: max-content 1fr; gap: 0 15px; font-family: monospace;">
@@ -120,7 +120,7 @@
               <span><strong>Aadhaar Last 4 Digits</span></strong>: 5125
               <span><strong>ID</span></strong>: EMP/PUN00084
               <span><strong>Password</span></strong>: Rake5125
-            </div>
+	    </div>
           </div>
         </div>
       </div>
@@ -134,11 +134,11 @@
             <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 border border-blue-200 flex items-center justify-center font-bold">
               <i class="fa-solid fa-user-shield"></i>
             </div>
-            <!-- <div>
+            <div>
               <div id="userNameDisplay" class="text-sm font-bold text-slate-800">Rajesh Kumar</div>
               <div id="userIdDisplay" class="text-xs font-mono font-medium text-slate-500">EMP/PUN02589</div>
             </div>
-          </div> -->
+          </div>
           <!-- Prominent Logout Button -->
           <button 
             type="button" 
@@ -162,8 +162,8 @@
         <!-- PaySlip Period Selection Form -->
         <div class="space-y-4">
           <div>
-            <h3 class="text-base font-bold text-slate-800"><--Choose Month--></h3>
-            <p class="text-xs text-slate-500"><--Choose Entity--></p>
+            <h3 class="text-base font-bold text-slate-800">Select PaySlip Period</h3>
+            <p class="text-xs text-slate-500">Choose Entity and month to download your Pay Slips.</p>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
@@ -681,7 +681,7 @@
           // File exists - Trigger download
           statusBox.className = "p-3.5 rounded-xl border text-xs flex items-center gap-2.5 bg-emerald-50 border-emerald-200 text-emerald-700";
           statusIcon.className = "fa-solid fa-circle-check text-sm shrink-0";
-          statusText.innerText = `Downloading PaySlip for ${month} ${year}...`;
+          statusText.innerText = `Downloaded PaySlip for ${month} ${year}...`;
 
           const anchor = document.createElement("a");
           anchor.href = filePath;
@@ -699,7 +699,7 @@
         // Error / Local testing limitation
         statusBox.className = "p-3.5 rounded-xl border text-xs flex items-center gap-2.5 bg-red-50 border-red-200 text-red-700";
         statusIcon.className = "fa-solid fa-triangle-exclamation text-sm shrink-0";
-        statusText.innerText = "Error accessing PaySlip file server.";
+        statusText.innerText = "Error accessing PaySlip server.";
       } finally {
         downloadBtn.disabled = false;
         downloadBtn.classList.remove("opacity-60", "cursor-not-allowed");
