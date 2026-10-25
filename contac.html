@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter & FontAwesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS Link -->
+    <link rel="stylesheet" href="contac.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        },
+                        accent: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /*body {
+        /*        -webkit-user-select: none; /* Safari */
+        /*        -ms-user-select: none;     /* Internet Explorer/Edge */
+        /*        user-select: none;        /* Standard syntax */
+        /*    }*/
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-16 md:pb-0 selection:bg-brand-500 selection:text-white">
+
+    <!-- Top Header -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-slate-900 leading-none">Checkmate</h1>
+                    <p class="text-xs font-medium text-emerald-600">Contact Us</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <div id="headerSearchWrapper" class="relative flex items-center">
+                    <button onclick="toggleHeaderSearch(event)" id="searchToggleBtn" title="Search Posts" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition shadow-xs">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </button>
+                    <div id="headerSearchBox" class="hidden absolute right-0 z-50 bg-white shadow-xl border border-slate-200 rounded-xl p-2 w-72 sm:w-80">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Search supervision, location..." 
+                                   class="w-full pl-9 pr-8 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs font-medium">
+                            <button onclick="closeHeaderSearch()" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 text-xs">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="toggleModal('ticketModal')" class="hidden sm:flex bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm hover:shadow items-center">
+                    <i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Drop your query
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+        
+        <div class="mb-4">
+            <p id="pageErrorMsg" class="text-xs text-red-500 font-medium hidden"></p>
+        </div>
+
+        <div class="mb-10">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="cardsGrid">
+                
+                <!-- Location Card Goa -->
+                <a href="https://www.google.com/maps/place/15%C2%B029'45.5%22N+73%C2%B049'17.4%22E/@15.4959774,73.8189251,17z/data=!3m1!4b1!4m4!3m3!8m2!3d15.4959722!4d73.8215?hl=en&entry=ttu" target="_blank" rel="noopener noreferrer" 
+                   onclick="checkLink(event, this.href)"
+                   class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 text-xl group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-200">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-1 flex items-center justify-between">
+                            Branch Office - Goa
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-emerald-600 transition"></i>
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-4">Office No: 205, 2nd Floor, Rizvi Tower, St. Lenz, Panjim, North Goa, Goa - 403001.</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-semibold text-emerald-600 group-hover:translate-x-1 transition-transform">
+                        Direction <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
+                    </span>
+                </a>
+
+                <!-- Location Card Pune -->
+                <a href="https://www.google.com/maps/place/Checkmate+Services+Pvt+Ltd/@18.5662909,73.7735218,19z/data=!4m6!3m5!1s0x3bc2bed0de41b83d:0xcfd5bdb9274c366e!8m2!3d18.5662909!4d73.7735218!16s%2Fg%2F11hyn8lj_f?authuser=0&entry=ttu&g_ep=EgoyMDI2MTAxOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" 
+                   onclick="checkLink(event, this.href)"
+                   class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 text-xl group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-200">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-1 flex items-center justify-between">
+                            Branch Office - Pune
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-emerald-600 transition"></i>
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-4">Radhai Row House no 1, Survey No 114, Hissa no: 1/2, Plot no 9 + 10, Nr The Rustel Nest Hotel, Mahalunge Road Baner, Baner, Pune, Maharashtra - 411045.</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-semibold text-emerald-600 group-hover:translate-x-1 transition-transform">
+                        Direction <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
+                    </span>
+                </a>
+
+                <!-- Police Card -->
+                <a href="tel:112" 
+                   onclick="checkLink(event, this.href)"
+                   class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4 text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors duration-200">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-1 flex items-center justify-between">
+                            Police Emergency
+                            <i class="fa-solid fa-phone text-xs text-slate-400 group-hover:text-blue-600 transition"></i>
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-2">Immediate law enforcement assistance.</p>
+                        <p class="text-sm font-mono font-semibold text-slate-800">112 / 100</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-semibold text-blue-600 group-hover:translate-x-1 transition-transform mt-4">
+                        Call Now <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
+                    </span>
+                </a>
+
+                <!-- Ambulance Card -->
+                <a href="tel:108" 
+                   onclick="checkLink(event, this.href)"
+                   class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mb-4 text-xl group-hover:bg-rose-600 group-hover:text-white transition-colors duration-200">
+                            <i class="fa-solid fa-truck-medical"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-1 flex items-center justify-between">
+                            Ambulance / Medical
+                            <i class="fa-solid fa-phone text-xs text-slate-400 group-hover:text-rose-600 transition"></i>
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-2">Emergency medical services and support.</p>
+                        <p class="text-sm font-mono font-semibold text-slate-800">102 / 108</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-semibold text-rose-600 group-hover:translate-x-1 transition-transform mt-4">
+                        Call Now <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
+                    </span>
+                </a>
+
+                <!-- Fire Brigade Card -->
+                <a href="tel:101" 
+                   onclick="checkLink(event, this.href)"
+                   class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4 text-xl group-hover:bg-amber-600 group-hover:text-white transition-colors duration-200">
+                            <i class="fa-solid fa-fire-extinguisher"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-1 flex items-center justify-between">
+                            Fire Brigade
+                            <i class="fa-solid fa-phone text-xs text-slate-400 group-hover:text-amber-600 transition"></i>
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-2">Fire rescue and disaster management.</p>
+                        <p class="text-sm font-mono font-semibold text-slate-800">101</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-semibold text-amber-600 group-hover:translate-x-1 transition-transform mt-4">
+                        Call Now <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
+                    </span>
+                </a>
+
+                <!-- Email Card -->
+                <a href="mailto:pune.recruitment@checkmateservices.com" 
+                   onclick="checkLink(event, this.href)"
+                   class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4 text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors duration-200">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-1 flex items-center justify-between">
+                            Email
+                            <i class="fa-solid fa-paper-plane text-xs text-slate-400 group-hover:text-blue-600 transition"></i>
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-2">Send your query, incident report or others.</p>
+                        <p class="text-xs font-mono font-semibold text-slate-800 truncate">pune.recruitment@checkmateservices.com</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-semibold text-blue-600 group-hover:translate-x-1 transition-transform mt-4">
+                        Send Report <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
+                    </span>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- Key Operational Contacts Section -->
+        <section class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-slate-100 gap-3">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900">Operations & Office</h3>
+                    <p class="text-xs text-slate-500">Contact your duty officers, Area officers, Assignment Managers, and office team.</p>
+                </div>
+                <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
+                    <button onclick="switchTab('operations')" id="tab-operations" class="tab-btn px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition bg-brand-600 text-white shadow-sm">
+                        Ops Team
+                    </button>
+                    <button onclick="switchTab('office')" id="tab-office" class="tab-btn px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition text-slate-600 hover:bg-slate-200">
+                        Office Team
+                    </button>
+                </div>
+            </div>
+
+            <!-- Operations Team Grid -->
+            <div id="content-operations" class="tab-content grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <script>
+                    const opsMembers = [
+                        { name: "Mr: Atul Thombare", role: "Area Officers - Nashik", phone: "+919011043669" },
+                        { name: "Mr: Babaram Surve", role: "Area Officers - Pune", phone: "+916352936233" },
+                        { name: "Mr: Balaji Ghodake", role: "AM - Infosys Pune", phone: "+919922009246" },
+                        { name: "Mr: Kaushik Achary", role: "AM - KPIT Pune", phone: "+916359959709" },
+                        { name: "Mr: Manoj Palande", role: "Area Officers - Pune", phone: "+917559345218" },
+                        { name: "Mr: Ramchandra Painkara", role: "Area Officers - GOA", phone: "+919923588822" },
+                        { name: "Mr: Shivling Khabile", role: "Area Officers - Sangli", phone: "+916352405304" },
+                        { name: "Mr: Suresh Math", role: "Area Officers - Solapur", phone: "+919168687288" },
+                        { name: "Mr: Sunny Chakranarayan", role: "Area Officers - Pune", phone: "+918149432704" }
+                    ];
+                    
+                    document.write(opsMembers.map(member => {
+                        const cleanParts = member.name.replace(/(Mr|Mrs|Ms|Dr)\s*:\s*/gi, '').trim().split(' ');
+                        const initials = cleanParts.length >= 2 
+                            ? (cleanParts[0][0] + cleanParts[1][0]).toUpperCase() 
+                            : cleanParts[0].substring(0, 2).toUpperCase();
+
+                        return `
+                        <div class="searchable-item p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200 transition-all flex items-center justify-between group">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center">
+                                    ${initials}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-900">${member.name}</p>
+                                    <p class="text-[11px] text-slate-500">${member.role}</p>
+                                </div>
+                            </div>
+                            <a href="tel:${member.phone}" onclick="checkLink(event, this.href)" title="Contact ${member.name}" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-emerald-600 hover:border-emerald-300 flex items-center justify-center text-xs transition shadow-xs">
+                                <i class="fa-solid fa-phone"></i>
+                            </a>
+                        </div>
+                    `;
+                    }).join(''));
+                </script>
+            </div>
+
+            <!-- Office Team Grid -->
+            <div id="content-office" class="tab-content hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <script>
+                    const officeMembers = [
+                        { name: "Mr: Sagar Navale", role: "Operations", phone: "+919881710501" },
+                        { name: "Mr: Bhalchandra Choudhari", role: "Gratuty, Clearance & Attendance", phone: "+919168687287" },
+                        { name: "Mrs: Pallavi Shelke", role: "Accounts", phone: "+91 9923202846" },
+                        { name: "Mr: Ketan Jadhav", role: "HR", phone: "+919922929095" },
+                        { name: "Mr: Sarvesh Sharma", role: "IT & Joining", phone: "+918554989875" },
+                        { name: "Mr: Vinod Reddy", role: "Compliance & grievance", phone: "+919327945501" },
+                        { name: "Mrs: Yadnya Shinde", role: "Fleet Incharge", phone: "+916359920442" }
+                    ];
+                    
+                    document.write(officeMembers.map(member => {
+                        const cleanParts = member.name.replace(/(Mr|Mrs|Ms|Dr)\s*:\s*/gi, '').trim().split(' ');
+                        const initials = cleanParts.length >= 2 
+                            ? (cleanParts[0][0] + cleanParts[1][0]).toUpperCase() 
+                            : cleanParts[0].substring(0, 2).toUpperCase();
+
+                        return `
+                        <div class="searchable-item p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200 transition-all flex items-center justify-between group">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center">
+                                    ${initials}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-900">${member.name}</p>
+                                    <p class="text-[11px] text-slate-500">${member.role}</p>
+                                </div>
+                            </div>
+                            <a href="tel:${member.phone}" onclick="checkLink(event, this.href)" title="Contact ${member.name}" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-300 flex items-center justify-center text-xs transition shadow-xs">
+                                <i class="fa-solid fa-phone"></i>
+                            </a>
+                        </div>
+                    `;
+                    }).join(''));
+                </script>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Dialog -->
+    <div id="ticketModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative animate-in fade-in zoom-in duration-200">
+            <button onclick="toggleModal('ticketModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg p-1">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="mb-5">
+                <h3 class="text-lg font-bold text-slate-900">Rise a ticket</h3>
+                <p class="text-xs text-slate-500">Drop your query here.</p>
+            </div>
+            <form onsubmit="handleFormSubmit(event)" class="space-y-4">
+                <div class="relative">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Your Employee ID:</label>
+                    <input type="text" id="ticketEmpId" oninput="filterEmployeeDropdown(this.value)" autocomplete="off" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <!-- Dropdown suggestions container -->
+                    <div id="empDropdownList" class="hidden absolute left-0 right-0 z-50 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto"></div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Your Name:</label>
+                    <input type="text" id="ticketEmail" readonly placeholder="Auto-filled" class="w-full px-3 py-2 text-sm border border-slate-200 bg-slate-100 text-slate-600 w-lg focus:outline-none cursor-not-allowed">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Company Name:</label>
+                    <input type="text" id="ticketCompany" required placeholder="e.g. Tech Park" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Subject:</label>
+                    <input type="text" id="ticketSubject" required placeholder="e.g. What is this for? " class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Remark:</label>
+                    <textarea id="ticketRemark" rows="3" required placeholder="Describe your issue..." class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                </div>
+                <p id="formErrorMsg" class="text-xs text-red-500 font-medium hidden"></p>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="toggleModal('ticketModal')" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 transition">Cancel</button>
+                    <button type="submit" id="submitBtn" class="px-4 py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition shadow-sm">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Success Popup Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 text-center animate-in fade-in zoom-in duration-200">
+            <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 text-xl">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 mb-1">
+            Success</h3>
+            <p id="successMessageText" class="text-xs text-slate-500 mb-5">Your request submitted successfully</p>
+            <button onclick="toggleModal('successModal')" class="w-full py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition shadow-sm">OK</button>
+        </div>
+    </div>
+
+    <!-- Mobile Floating Navigation Bar -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-6 py-2 flex justify-around items-center">
+        <a href="index.html" onclick="checkLink(event, this.href)" class="flex flex-col items-center text-brand-600">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px] font-semibold mt-0.5">Home</span>
+        </a>
+        <a href="https://wa.me/9327945501" target="_blank" onclick="checkLink(event, this.href)" class="flex flex-col items-center text-slate-500 hover:text-green-600">
+            <i class="fa-brands fa-whatsapp text-lg"></i>
+            <span class="text-[10px] font-semibold mt-0.5">WhatsApp</span>
+        </a>
+        <a href="tel:9327945501" onclick="checkLink(event, this.href)" class="flex flex-col items-center text-slate-500 hover:text-purple-600">
+            <i class="fa-solid fa-phone text-lg"></i>
+            <span class="text-[10px] font-semibold mt-0.5">Emergency</span>
+        </a>
+        <button onclick="toggleModal('ticketModal')" class="flex flex-col items-center text-slate-500 hover:text-emerald-600">
+            <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+            <span class="text-[10px] font-semibold mt-0.5">Ticket</span>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-500 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-center">
+            <p>&copy; <span id="currentYear"></span> Checkmate Services Private Limited</p>
+        </div>
+    </footer>
+
+    <script src="contac.js"></script>
+</body>
+</html>
