@@ -314,6 +314,12 @@
 
 <div class="form-container">
     <h2>✍️ CSPL Application & Document Upload</h2>
+<div style="margin-bottom:15px;">
+    <button type="button" id="recoverDraftBtn"
+        style="width:100%;height:48px;background:#16a34a;color:white;border:none;border-radius:12px;font-weight:700;">
+        Recover Saved Draft
+    </button>
+</div>
     <form id="appForm">
         
         <!-- Personal Details -->
@@ -1060,6 +1066,126 @@ document.addEventListener('visibilitychange', async () => {
     await requestWakeLock();
   }
 });
+</script>
+<script>
+const DRAFT_KEY = "joiningFormDraft";
+const DRAFT_TIME_KEY = "joiningFormDraftTime";
+const DRAFT_EXPIRY = 24 * 60 * 60 * 1000; // 24 Hours
+
+// Save Draft
+function saveDraft() {
+
+    const draft = {};
+
+    document.querySelectorAll("input, select, textarea").forEach(el => {
+
+        if (el.type === "file") return;
+
+        if (el.type === "checkbox") {
+            draft[el.id || el.name] = el.checked;
+        } else {
+            draft[el.id] = el.value;
+        }
+    });
+
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    localStorage.setItem(DRAFT_TIME_KEY, Date.now());
+}
+
+// Recover Draft
+function recoverDraft() {
+
+    const savedTime = localStorage.getItem(DRAFT_TIME_KEY);
+
+    if (!savedTime) {
+        showCustomAlert("No draft found");
+        return;
+    }
+
+    const age = Date.now() - parseInt(savedTime);
+
+    if (age > DRAFT_EXPIRY) {
+
+        localStorage.removeItem(DRAFT_KEY);
+        localStorage.removeItem(DRAFT_TIME_KEY);
+
+        showCustomAlert("Draft expired (24 Hours)");
+        return;
+    }
+
+    const draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}");
+
+    Object.keys(draft).forEach(key => {
+
+        const field =
+            document.getElementById(key) ||
+            document.querySelector(`[name="${key}"]`);
+
+        if (!field) return;
+
+        if (field.type === "checkbox") {
+            field.checked = draft[key];
+        } else {
+            field.value = draft[key];
+        }
+    });
+
+    const birthDate = document.getElementById("birthDate");
+
+    if (birthDate.value) {
+        birthDate.dispatchEvent(new Event("change"));
+    }
+
+    const pvStatus = document.getElementById("pvStatus");
+
+    if (pvStatus.value) {
+        pvStatus.dispatchEvent(new Event("change"));
+    }
+
+    showCustomAlert("Draft restored successfully", "Recovered");
+}
+
+// Auto Save Every Change
+document.addEventListener("input", saveDraft);
+document.addEventListener("change", saveDraft);
+
+// Recover Button
+document.getElementById("recoverDraftBtn")
+    .addEventListener("click", recoverDraft);
+
+// Auto Delete Old Draft
+window.addEventListener("load", () => {
+
+    const savedTime = localStorage.getItem(DRAFT_TIME_KEY);
+
+    if (!savedTime) return;
+
+    const age = Date.now() - parseInt(savedTime);
+
+    if (age > DRAFT_EXPIRY) {
+        localStorage.removeItem(DRAFT_KEY);
+        localStorage.removeItem(DRAFT_TIME_KEY);
+    }
+});
+
+if (result.status === 'success') {
+
+    showCustomAlert(
+        'Success! Form submitted. Draft is still available for next 24 hours from Recover Draft button.',
+        'Success'
+    );
+
+    if (result.pdfUrl) {
+        window.open(result.pdfUrl, '_blank');
+    }
+
+    document.getElementById('appForm').reset();
+    clearSignature();
+    document.getElementById('pvDate').style.display = 'none';
+    setInitialDates();
+
+    // Draft intentionally retained for 24 hours
+}
 </script>
 
 </body>
