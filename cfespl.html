@@ -314,6 +314,12 @@
 
 <div class="form-container">
     <h2>✍️ CFESPL Application & Document Upload</h2>
+    <div style="text-align:center;margin-bottom:15px;">
+    <button type="button" id="recoverDraftBtn"
+        style="background:#16a34a;color:white;border:none;padding:10px 18px;border-radius:10px;font-weight:bold;">
+        Recover Draft Data
+    </button>
+</div>
     <form id="appForm">
         
         <!-- Personal Details -->
@@ -975,19 +981,24 @@
 
             const result = await response.json();
             
-            if (result.status === 'success') {
-                showCustomAlert('Success! Your PDF document has been generated.', 'Success');
-                if (result.pdfUrl) {
-                    window.open(result.pdfUrl, '_blank');
-                }
-                
-                // RESET FORM AND CANVAS UPON SUCCESSFUL SUBMISSION
-                document.getElementById('appForm').reset();
-                clearSignature();
-                document.getElementById('pvDate').style.display = 'none';
-                setInitialDates();
+if (result.status === 'success') {
 
-            } else {
+    showCustomAlert(
+        'Success! Form submitted. Draft is still available for next 24 hours from Recover Draft button.',
+        'Success'
+    );
+
+    if (result.pdfUrl) {
+        window.open(result.pdfUrl, '_blank');
+    }
+
+    document.getElementById('appForm').reset();
+    clearSignature();
+    document.getElementById('pvDate').style.display = 'none';
+    setInitialDates();
+
+    // Draft intentionally retained for 24 hours
+    } else {
                 showCustomAlert('Error processing document: ' + (result.message || 'Unknown error'), 'Error');
             }
 
@@ -1060,6 +1071,89 @@ document.addEventListener('visibilitychange', async () => {
   if (wakeLock !== null && document.visibilityState === 'visible') {
     await requestWakeLock();
   }
+});
+</script>
+    <script>
+const DRAFT_KEY = "joiningFormDraft";
+const DRAFT_TIME_KEY = "joiningFormDraftTime";
+const DRAFT_EXPIRY = 24 * 60 * 60 * 1000; // 24 Hours
+
+// Save Draft
+function saveDraft() {
+
+    const formData = {};
+
+    document.querySelectorAll("input, select, textarea").forEach(el => {
+
+        if (el.type === "file") return;
+
+        if (el.type === "checkbox") {
+            formData[el.id || el.name + "_" + el.value] = el.checked;
+        } else {
+            formData[el.id] = el.value;
+        }
+
+    });
+
+    if (hasSigned) {
+        formData.signature = canvas.toDataURL("image/png");
+    }
+
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(formData));
+    localStorage.setItem(DRAFT_TIME_KEY, Date.now());
+}
+
+// Auto Save Every Change
+document.addEventListener("input", saveDraft);
+document.addEventListener("change", saveDraft);
+
+// Recover Draft
+document.getElementById("recoverDraftBtn").addEventListener("click", () => {
+
+    const savedTime = localStorage.getItem(DRAFT_TIME_KEY);
+
+    if (!savedTime) {
+        showCustomAlert("No draft available.");
+        return;
+    }
+
+    if (Date.now() - Number(savedTime) > DRAFT_EXPIRY) {
+        localStorage.removeItem(DRAFT_KEY);
+        localStorage.removeItem(DRAFT_TIME_KEY);
+        showCustomAlert("Draft expired (older than 24 hours).");
+        return;
+    }
+
+    const data = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}");
+
+    Object.keys(data).forEach(key => {
+
+        const el = document.getElementById(key);
+
+        if (el) {
+            if (el.type === "checkbox") {
+                el.checked = data[key];
+            } else {
+                el.value = data[key];
+            }
+        }
+
+    });
+
+    // Restore Signature
+    if (data.signature) {
+        const img = new Image();
+
+        img.onload = function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            hasSigned = true;
+        };
+
+        img.src = data.signature;
+    }
+
+    showCustomAlert("Draft recovered successfully.", "Success");
 });
 </script>
 </body>
