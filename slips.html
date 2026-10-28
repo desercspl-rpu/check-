@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PaySlip Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      min-height: 100vh;
+    }
+    
+    .light-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+    }
+
+    .custom-ring:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center p-4">
+
+  <div class="w-full max-w-md">
+    <!-- Header Branding -->
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl mb-3 border border-blue-200 shadow-sm">
+        <i class="fa-solid fa-shield-halved text-3xl"></i>
+      </div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-800">Checkmate</h1>
+      <p class="text-xs text-slate-500 font-medium mt-1">Download PaySlips</p>
+    </div>
+
+    <!-- MAIN CARD CONTAINER -->
+    <div class="light-card rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+      
+      <!-- LOGIN SECTION -->
+      <div id="loginSection" class="space-y-5">
+        <div>
+          <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-right-to-bracket text-blue-600"></i> Employee Login
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">Enter your ID and Password to download payslips.</p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+          <!-- Employee ID Input -->
+          <div>
+            <label for="empId" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Employee ID</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i class="fa-solid fa-id-badge"></i>
+              </span>
+              <input 
+                type="text" 
+                id="empId" 
+                placeholder="e.g. EMP/PUN01234" 
+                class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl pl-10 pr-4 py-3 custom-ring focus:border-blue-600 transition placeholder-slate-400"
+                required
+              >
+            </div>
+          </div>
+
+          <!-- Password Input -->
+          <div>
+            <label for="password" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Password</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i class="fa-solid fa-lock"></i>
+              </span>
+              <input 
+                type="password" 
+                id="password" 
+                placeholder="••••••••" 
+                class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl pl-10 pr-4 py-3 custom-ring focus:border-blue-600 transition placeholder-slate-400"
+                required
+              >
+            </div>
+          </div>
+
+          <!-- Login Error Alert -->
+          <div id="loginError" class="hidden p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs flex items-center gap-2">
+            <i class="fa-solid fa-circle-exclamation text-sm shrink-0"></i>
+            <span id="loginErrorText">Invalid Employee ID or Password.</span>
+          </div>
+
+          <!-- Login Submit Button -->
+          <button 
+            type="submit" 
+            class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 text-sm"
+          >
+            <span>Sign In</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </form>
+
+        <!-- Demo Credentials Reference -->
+        <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 text-xs space-y-2">
+          <div class="font-semibold text-blue-700 flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i> Demo Credentials:</span>
+            <!--<span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">Testing</span>-->
+          </div>
+          <div class="space-y-1 text-[11px] text-slate-600">
+            <div style="display: grid; grid-template-columns: max-content 1fr; gap: 0 15px; font-family: monospace;">
+              <span><strong>Name</span></strong>: Rakesh Wankhede
+              <span><strong>First letter (Capital)</span></strong>: R
+              <span><strong>3 letters (Small)</span></strong>: ake
+              <span><strong>Aadhaar Last 4 Digits</span></strong>: 5125
+              <span><strong>ID</span></strong>: EMP/PUN00084
+              <span><strong>Password</span></strong>: Rake5125
+	    </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD / PAYSLIP DOWNLOAD SECTION -->
+      <div id="dashboardSection" class="hidden space-y-5">
+        
+        <!-- Logged-in User Header with Name and ID -->
+        <div class="flex items-center justify-between bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 border border-blue-200 flex items-center justify-center font-bold">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div>
+              <div id="userNameDisplay" class="text-sm font-bold text-slate-800">Rajesh Kumar</div>
+              <div id="userIdDisplay" class="text-xs font-mono font-medium text-slate-500">EMP/PUN02589</div>
+            </div>
+          </div>
+          <!-- Prominent Logout Button -->
+          <button 
+            type="button" 
+            onclick="logout('manual')" 
+            class="text-xs bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-3 py-2 rounded-lg border border-red-200 transition flex items-center gap-1.5"
+            title="Logout of your session"
+          >
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+
+        <!-- Inactivity Countdown Warning (Shows in last 30s) -->
+        <div id="inactivityWarning" class="hidden p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs flex items-center justify-between">
+          <span class="flex items-center gap-1.5">
+            <i class="fa-solid fa-clock fa-spin"></i>
+            <span>Session expiring due to inactivity:</span>
+          </span>
+          <strong id="inactivityCountdown" class="font-mono text-xs font-bold text-amber-800">30s</strong>
+        </div>
+
+        <!-- PaySlip Period Selection Form -->
+        <div class="space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-800">Select PaySlip Period</h3>
+            <p class="text-xs text-slate-500">Choose Entity and month to download your Pay Slips.</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <!-- Select Year -->
+            <div>
+              <label for="yearSelect" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Entity Name</label>
+              <select 
+                id="yearSelect" 
+                class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl px-3 py-2.5 custom-ring focus:border-blue-600 transition font-medium"
+              >
+                <option value="" selected>--Choose Entity--</option>
+                <option value="CSPL">CSPL</option>
+                <option value="CFESPL">CFESPL</option>
+              </select>
+            </div>
+
+            <!-- Select Month -->
+            <div>
+              <label for="monthSelect" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Month</label>
+              <select 
+                id="monthSelect" 
+                class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl px-3 py-2.5 custom-ring focus:border-blue-600 transition font-medium"
+              >
+                <option value="Last" selected>Last Month</option>
+                <option value="LastSec">Last Second</option>
+                <option value="LastThi">Last Third</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Download Button -->
+          <button 
+            type="button" 
+            id="downloadBtn" 
+            onclick="downloadPaySlip()" 
+            class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 text-sm"
+          >
+            <i class="fa-solid fa-file-arrow-down text-base"></i>
+            <span>Download PaySlip</span>
+          </button>
+        </div>
+
+        <!-- Dynamic Status Message -->
+        <div id="statusMessage" class="hidden p-3.5 rounded-xl border text-xs flex items-center gap-2.5 transition">
+          <i id="statusIcon" class="fa-solid text-base shrink-0"></i>
+          <span id="statusText" class="font-medium">Status update...</span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-xs text-slate-400 mt-6">
+      &copy; 2026 Checkmate Services Private Limited
+    </div>
+  </div>
+<script src="empass.js"></script>
+  <script>
+
+    let currentSessionUser = null;
+    
+    // Inactivity Tracker Variables (120 seconds = 2 minutes)
+    const INACTIVITY_LIMIT_SECONDS = 120;
+    const WARNING_THRESHOLD_SECONDS = 30;
+    let secondsInactive = 0;
+    let inactivityTimer = null;
+
+    /**
+     * Normalizes Employee ID by removing special characters & slashes
+     * Example: "EMP/PUN02589" -> "EMPPUN02589"
+     */
+    function normalizeEmpId(empId) {
+      if (!empId) return "";
+      return empId.trim().replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+    }
+
+    /**
+     * Handle Login Verification
+     */
+    function handleLogin(event) {
+      event.preventDefault();
+
+      const inputEmpId = document.getElementById("empId").value.trim();
+      const inputPassword = document.getElementById("password").value;
+      const errorBox = document.getElementById("loginError");
+      const errorText = document.getElementById("loginErrorText");
+
+      errorBox.classList.add("hidden");
+
+      if (!inputEmpId || !inputPassword) {
+        errorText.innerText = "Please enter both Employee ID and Password.";
+        errorBox.classList.remove("hidden");
+        return;
+      }
+
+      // Find matching employee record
+      const matchedEmployee = employeeDB.find(
+        emp => emp.id.toUpperCase() === inputEmpId.toUpperCase() && emp.password === inputPassword
+      );
+
+      if (matchedEmployee) {
+        currentSessionUser = matchedEmployee;
+
+        // Display Name and ID on Dashboard Header
+        document.getElementById("userNameDisplay").innerText = matchedEmployee.name;
+        document.getElementById("userIdDisplay").innerText = matchedEmployee.id;
+
+        // Transition views
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("dashboardSection").classList.remove("hidden");
+
+        // Clear input values
+        document.getElementById("empId").value = "";
+        document.getElementById("password").value = "";
+
+        // Reset status message
+        document.getElementById("statusMessage").classList.add("hidden");
+
+        // Start Inactivity Listener
+        startInactivityTimer();
+      } else {
+        errorText.innerText = "Invalid Employee ID or Password.";
+        errorBox.classList.remove("hidden");
+      }
+    }
+
+    /**
+     * Download PaySlip logic checking existence via HTTP HEAD request
+     */
+    async function downloadPaySlip() {
+      if (!currentSessionUser) return;
+
+      const year = document.getElementById("yearSelect").value;
+      const month = document.getElementById("monthSelect").value;
+      const normalizedId = normalizeEmpId(currentSessionUser.id);
+      const pdfFileName = `${normalizedId}.pdf`;
+      const filePath = `PaySlips/${year}/${month}/${pdfFileName}`;
+
+      const statusBox = document.getElementById("statusMessage");
+      const statusIcon = document.getElementById("statusIcon");
+      const statusText = document.getElementById("statusText");
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      // UI Pending State
+      statusBox.className = "p-3.5 rounded-xl border text-xs flex items-center gap-2.5 bg-blue-50 border-blue-200 text-blue-700";
+      statusIcon.className = "fa-solid fa-spinner fa-spin text-sm shrink-0";
+      statusText.innerText = "Checking file availability...";
+      statusBox.classList.remove("hidden");
+      downloadBtn.disabled = true;
+      downloadBtn.classList.add("opacity-60", "cursor-not-allowed");
+
+      try {
+        // Fetch file header to verify existence
+        const response = await fetch(filePath, { method: "HEAD" });
+
+        if (response.ok) {
+          // File exists - Trigger download
+          statusBox.className = "p-3.5 rounded-xl border text-xs flex items-center gap-2.5 bg-emerald-50 border-emerald-200 text-emerald-700";
+          statusIcon.className = "fa-solid fa-circle-check text-sm shrink-0";
+          statusText.innerText = `Downloaded PaySlip for ${month} ${year}...`;
+
+          const anchor = document.createElement("a");
+          anchor.href = filePath;
+          anchor.download = pdfFileName;
+          document.body.appendChild(anchor);
+          anchor.click();
+          document.body.removeChild(anchor);
+        } else {
+          // File missing
+          statusBox.className = "p-3.5 rounded-xl border text-xs flex items-center gap-2.5 bg-amber-50 border-amber-200 text-amber-700";
+          statusIcon.className = "fa-solid fa-circle-exclamation text-sm shrink-0";
+          statusText.innerText = `PaySlip not found for ${month} ${year}.`;
+        }
+      } catch (err) {
+        // Error / Local testing limitation
+        statusBox.className = "p-3.5 rounded-xl border text-xs flex items-center gap-2.5 bg-red-50 border-red-200 text-red-700";
+        statusIcon.className = "fa-solid fa-triangle-exclamation text-sm shrink-0";
+        statusText.innerText = "Error accessing PaySlip server.";
+      } finally {
+        downloadBtn.disabled = false;
+        downloadBtn.classList.remove("opacity-60", "cursor-not-allowed");
+      }
+    }
+
+    /**
+     * Inactivity Timer Logic (2 Minutes = 120s)
+     */
+    function resetInactivity() {
+      secondsInactive = 0;
+      const warningBox = document.getElementById("inactivityWarning");
+      if (warningBox) warningBox.classList.add("hidden");
+    }
+
+    function startInactivityTimer() {
+      resetInactivity();
+      if (inactivityTimer) clearInterval(inactivityTimer);
+
+      // Listen for user activity
+      const activityEvents = ["mousemove", "keydown", "click", "touchstart", "scroll"];
+      activityEvents.forEach(evt => {
+        window.addEventListener(evt, resetInactivity, { passive: true });
+      });
+
+      inactivityTimer = setInterval(() => {
+        if (!currentSessionUser) return;
+
+        secondsInactive++;
+        const remainingSeconds = INACTIVITY_LIMIT_SECONDS - secondsInactive;
+
+        // Show countdown warning in the last 30 seconds
+        if (remainingSeconds <= WARNING_THRESHOLD_SECONDS && remainingSeconds > 0) {
+          const warningBox = document.getElementById("inactivityWarning");
+          const countdownText = document.getElementById("inactivityCountdown");
+          warningBox.classList.remove("hidden");
+          countdownText.innerText = `${remainingSeconds}s`;
+        }
+
+        // Auto Logout Trigger
+        if (secondsInactive >= INACTIVITY_LIMIT_SECONDS) {
+          logout("inactivity");
+        }
+      }, 1000);
+    }
+
+    function stopInactivityTimer() {
+      if (inactivityTimer) clearInterval(inactivityTimer);
+      const activityEvents = ["mousemove", "keydown", "click", "touchstart", "scroll"];
+      activityEvents.forEach(evt => {
+        window.removeEventListener(evt, resetInactivity);
+      });
+      const warningBox = document.getElementById("inactivityWarning");
+      if (warningBox) warningBox.classList.add("hidden");
+    }
+
+    /**
+     * Logout Handler
+     */
+    function logout(reason = "manual") {
+      currentSessionUser = null;
+      stopInactivityTimer();
+
+      // View transitions
+      document.getElementById("dashboardSection").classList.add("hidden");
+      document.getElementById("loginSection").classList.remove("hidden");
+
+      // Display warning on login screen if logged out due to inactivity
+      const errorBox = document.getElementById("loginError");
+      const errorText = document.getElementById("loginErrorText");
+      
+      if (reason === "inactivity") {
+        errorText.innerText = "Session expired due to 2 minutes of inactivity. Please sign in again.";
+        errorBox.classList.remove("hidden");
+      } else {
+        errorBox.classList.add("hidden");
+      }
+    }
+  </script>
+</body>
+</html>
