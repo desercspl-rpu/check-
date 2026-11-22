@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Police Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { 
+      box-sizing: border-box; 
+      font-family: 'Poppins', sans-serif; 
+      -webkit-tap-highlight-color: transparent; 
+    }
+    body { 
+      margin: 0; 
+      min-height: 100vh; 
+      background: linear-gradient(135deg, #eef2f3, #e0eafc); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 14px; 
+    }
+    .container { 
+      width: 100%; 
+      max-width: 440px; 
+      padding: 28px 25px; 
+      border-radius: 20px; 
+      background: #ffffff; 
+      border: 1px solid rgba(0, 0, 0, 0.08); 
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06), 0 5px 15px rgba(0, 0, 0, 0.04); 
+      color: #2c3e50; 
+    }
+    h2 { 
+      text-align: center; 
+      margin-top: 0;
+      margin-bottom: 22px; 
+      font-weight: 600; 
+      font-size: 24px; 
+      color: #1e293b;
+    }
+    label { 
+      font-size: 13px; 
+      font-weight: 500;
+      color: #475569; 
+      display: block; 
+      margin-top: 14px; 
+    }
+    input { 
+      width: 100%; 
+      padding: 14px; 
+      margin-top: 6px; 
+      border-radius: 12px; 
+      border: 1px solid #cbd5e1; 
+      outline: none; 
+      background: #f8fafc; 
+      color: #0f172a; 
+      font-size: 15px; 
+      transition: all 0.2s ease-in-out;
+    }
+    input:focus { 
+      background: #ffffff; 
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); 
+    }
+    input::placeholder {
+      color: #94a3b8;
+    }
+    button { 
+      width: 100%; 
+      padding: 14px; 
+      margin-top: 20px; 
+      border-radius: 12px; 
+      border: none; 
+      background: linear-gradient(135deg, #0284c7, #2563eb); 
+      color: white; 
+      font-size: 16px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: all 0.2s ease-in-out; 
+      min-height: 50px; 
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    }
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    button:disabled { 
+      background: #cbd5e1 !important; 
+      cursor: not-allowed; 
+      opacity: 0.8; 
+      box-shadow: none;
+    }
+    .card { 
+      margin-top: 20px; 
+      padding: 18px; 
+      border-radius: 14px; 
+      background: #f8fafc; 
+      border: 1px solid #e2e8f0; 
+    }
+    .card h3 {
+      color: #0f172a;
+      font-size: 18px;
+    }
+    #infoBlock p {
+      margin: 8px 0;
+      font-size: 14px;
+      color: #334155;
+    }
+    #infoBlock strong {
+      color: #0f172a;
+    }
+    .admin-comment-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 13px;
+    }
+    .error-msg {
+      color: #ef4444;
+      font-size: 13px;
+      margin-top: 6px;
+      margin-bottom: 0;
+      display: block;
+      font-weight: 500;
+    }
+    .status-msg { 
+      text-align: center; 
+      font-size: 17px; 
+      font-weight: 600; 
+      padding: 22px 18px; 
+      margin-top: 10px; 
+      border-radius: 14px; 
+      background: #f0f9ff; 
+      color: #0369a1;
+      border: 1.5px dashed #0284c7; 
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🔍 Police Verification</h2>
+  
+  <div id="searchSection">
+    <label>Enter Employee ID:</label>
+    <input type="text" id="empIdInput" placeholder="Enter Employee ID here..." autocomplete="off">
+    <div id="searchError" class="error-msg"></div>
+    <button onclick="verifyProfileState()" id="verifyBtn">Verify</button>
+  </div>
+
+  <div id="detailsCard" class="card" style="display:none;">
+    <h3 style="margin-top:0;">Verify Details:</h3>
+    <div id="adminCommentContainer"></div>
+    <div id="infoBlock"></div>
+    <button onclick="proceedToApplication()" id="proceedBtn">Continue</button>
+  </div>
+
+  <div id="applicationForm" class="card" style="display:none;">
+    <label>Registered Mobile Number:</label>
+    <input type="tel" id="mobileNum" placeholder="Enter mobile number" maxlength="10">
+    
+    <label>Attach PV Document (Image / PDF Required):</label>
+    <input type="file" id="fileUpload" accept="image/*,.pdf" required>
+    <div id="appError" class="error-msg"></div>
+    
+    <button onclick="dispatchApplication()" id="submitAppBtn">Submit to Office</button>
+  </div>
+
+  <div id="terminalStatusBox" class="status-msg" style="display:none;"></div>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbyTPMn_czxqQdaR-eOwHEh8_4_E2_Ylb0DxbjIldg0bpT_iIbnLNdxH_90EAXl_Hic7iQ/exec";
+let currentSessionProfile = {};
+let currentAdminComment = "";
+
+function updateUiState(btnId, loadingText, isDone) {
+  const btn = document.getElementById(btnId);
+  if (btn) {
+    btn.disabled = !isDone;
+    btn.innerText = loadingText;
+  }
+}
+
+function verifyProfileState() {
+  const searchError = document.getElementById("searchError");
+  searchError.innerText = "";
+  
+  const empId = document.getElementById("empIdInput").value.trim();
+  if(!empId) { 
+    searchError.innerText = "Employee ID cannot be empty!"; 
+    return; 
+  }
+  
+  updateUiState("verifyBtn", "Verifying...", false);
+  
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ action: "getEmployeeStatus", empId: empId })
+  })
+  .then(r => r.json())
+  .then(res => {
+    updateUiState("verifyBtn", "Verify", true);
+    if(res.status === "error") { 
+      searchError.innerText = res.message; 
+      return; 
+    }
+    
+    currentSessionProfile = res.profile;
+    currentAdminComment = res.comment || "";
+    
+    if(res.state === "VERIFIED") {
+       showTerminalMessage("Your verification Done!");
+       return;
+    }
+    if(res.state === "PENDING_VERIFICATION" || res.state === "SUBMITTED_TO_OFFICE") {
+       showTerminalMessage("You can check status after working 24hrs");
+       return;
+    }
+    
+    document.getElementById("searchSection").style.display = "none";
+    document.getElementById("detailsCard").style.display = "block";
+    
+    const commentContainer = document.getElementById("adminCommentContainer");
+    if(currentAdminComment.trim() !== "") {
+      commentContainer.innerHTML = `<div class="admin-comment-box"><strong>Admin Remark:</strong> ${currentAdminComment}</div>`;
+    } else {
+      commentContainer.innerHTML = "";
+    }
+    
+    document.getElementById("infoBlock").innerHTML = `
+      <p><strong>Emp ID:</strong> ${currentSessionProfile.empId}</p>
+      <p><strong>Name:</strong> ${currentSessionProfile.name}</p>
+      <p><strong>DOB:</strong> ${currentSessionProfile.dob}</p>
+      <p><strong>Designation:</strong> ${currentSessionProfile.designation}</p>
+      <p><strong>Father Name:</strong> ${currentSessionProfile.father}</p>
+      <p><strong>UAN:</strong> ${currentSessionProfile.uan}</p>
+      <p><strong>ESIC:</strong> ${currentSessionProfile.esic}</p>
+    `;
+  });
+}
+
+function proceedToApplication() {
+  document.getElementById("detailsCard").style.display = "none";
+  document.getElementById("applicationForm").style.display = "block";
+}
+
+function dispatchApplication() {
+  const appError = document.getElementById("appError");
+  appError.innerText = "";
+
+  const mobile = document.getElementById("mobileNum").value.trim();
+  if(mobile.length !== 10 || isNaN(mobile)) { 
+    appError.innerText = "Mobile number must, cannot be empty!"; 
+    return; 
+  }
+  
+  const fileInput = document.getElementById("fileUpload");
+  const file = fileInput.files[0];
+  
+  if (!file) {
+    appError.innerText = "Please attach a required PV document (Image or PDF)!";
+    return;
+  }
+  
+  updateUiState("submitAppBtn", "Submitting...", false);
+  
+  let payload = {
+    action: "submitMobileAndFile",
+    empId: currentSessionProfile.empId,
+    name: currentSessionProfile.name,
+    email: currentSessionProfile.email,
+    mobile: mobile,
+    previousComment: currentAdminComment
+  };
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    payload.fileData = e.target.result.split(",")[1];
+    payload.mimeType = file.type;
+    payload.fileName = file.name;
+    transmitApplication(payload);
+  };
+  reader.readAsDataURL(file);
+}
+
+function transmitApplication(payload) {
+  const appError = document.getElementById("appError");
+  fetch(API_URL, { method: "POST", body: JSON.stringify(payload) })
+  .then(r => r.json())
+  .then(res => {
+    updateUiState("submitAppBtn", "Submit to Office", true);
+    if(res.status === "success") {
+      showTerminalMessage("You can check status after working 24hrs");
+    } else {
+      appError.innerText = res.message;
+    }
+  });
+}
+
+function showTerminalMessage(msg) {
+  document.getElementById("searchSection").style.display = "none";
+  document.getElementById("detailsCard").style.display = "none";
+  document.getElementById("applicationForm").style.display = "none";
+  
+  const target = document.getElementById("terminalStatusBox");
+  target.style.display = "block";
+  target.innerText = msg;
+}
+</script>
+</body>
+</html>
