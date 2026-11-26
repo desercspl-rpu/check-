@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#1d4ed8" />
+  <title>Employee Nomination</title>
+  <style>
+    :root {
+      --primary: #1d4ed8;
+      --primary-hover: #1e40af;
+      --accent-soft: #eff6ff;
+      --bg: #eef2f6;
+      --card: #ffffff;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #475569;
+    }
+    * { box-sizing: border-box; font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); margin: 0; padding: 12px 10px 88px 10px; }
+
+    .container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: var(--card);
+      padding: 18px 16px 24px 16px;
+      border-radius: 16px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+    }
+    h2 {
+      margin: 0 0 14px 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      border-bottom: 2px solid var(--accent-soft);
+      padding-bottom: 10px;
+    }
+    h3 {
+      margin: 20px 0 10px 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--accent-soft);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+    .hidden { display: none !important; }
+
+    .search-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .search-bar input {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      font-size: 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      text-transform: uppercase;
+      background: #f8fafc;
+    }
+    .search-bar input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+
+    button {
+      min-height: 46px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 11px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.08s;
+    }
+    button:active { transform: scale(0.99); }
+    button:hover { background: var(--primary-hover); }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+    button.secondary { background: #475569; }
+    button.secondary:hover { background: #334155; }
+
+    .toggle-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+      padding: 2px 4px;
+    }
+    .switch { position: relative; display: inline-block; width: 48px; height: 26px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: 0.25s; border-radius: 26px; }
+    .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: 0.25s; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { transform: translateX(22px); }
+    .toggle-state { min-width: 28px; text-align: left; }
+    input:checked ~ .toggle-state { color: var(--primary); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .field { display: flex; flex-direction: column; }
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .field label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 16px;
+      background: #ffffff;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .field input[readonly], .field textarea[readonly] {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .signature-wrapper {
+      margin-top: 18px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+    }
+    canvas {
+      width: 100%;
+      max-width: 400px;
+      height: 130px;
+      border: 2px dashed #60a5fa;
+      border-radius: 10px;
+      background: #fff;
+      cursor: crosshair;
+      touch-action: none;
+      display: block;
+      margin-top: 8px;
+    }
+
+    .actions {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 10px;
+    }
+    .actions button { width: 100%; }
+
+    .status {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .status.info { background: #dbeafe; color: #1e40af; }
+    .status.error { background: #fee2e2; color: #991b1b; }
+    .status.success { background: #dcfce7; color: #166534; }
+
+    .custom-modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 16px; }
+    .custom-modal-card { background: #ffffff; border-radius: 16px; max-width: 380px; width: 100%; padding: 24px; text-align: center; box-shadow: 0 14px 32px rgba(0, 0, 0, 0.24); }
+    .custom-modal-icon { width: 52px; height: 52px; border-radius: 50%; background: #dcfce7; color: #166534; font-size: 26px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .custom-modal-title { margin: 0 0 8px 0; font-size: 18px; color: #0f172a; }
+    .custom-modal-text { margin: 0 0 20px 0; font-size: 14px; color: #475569; }
+    .custom-modal-card button { width: 100%; }
+
+    @media (min-width: 640px) {
+      body { padding: 24px; }
+      .container { max-width: 900px; margin: 0 auto; padding: 28px; }
+      .search-bar { flex-direction: row; }
+      .grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+      .actions { flex-direction: row; justify-content: flex-end; }
+      .actions button { width: auto; }
+      canvas { width: 400px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="step1Window">
+    <h2>Employee Details</h2>
+    <div class="search-bar" id="searchBar">
+      <input type="text" id="empIdInput" placeholder="EMP/PUN01234" />
+      <button id="fetchBtn" onclick="fetchEmployeeData()">Verify</button>
+    </div>
+
+    <div id="empDetailsSection" class="hidden">
+      <div class="grid" id="empFieldsGrid">
+        <div class="field">
+          <div class="label-row"><label for="emp_field_Employee_ID">Employee ID:</label></div>
+          <input type="text" id="emp_field_Employee_ID" name="Employee_ID" readonly />
+        </div>
+        <div class="field">
+          <div class="label-row"><label for="emp_field_Name">Name:</label></div>
+          <input type="text" id="emp_field_Name" name="Name" readonly />
+        </div>
+        <div class="field">
+          <div class="label-row"><label for="emp_field_Father_Husband_Name">Father/Husband Name</label></div>
+          <input type="text" id="emp_field_Father_Husband_Name" name="Father/Husband Name" readonly />
+        </div>
+        <input type="text" id="emp_field_DOB" name="DOB" hidden />
+        <input type="text" id="emp_field_Marital_Status" name="Marital_Status" hidden />
+        <input type="text" id="emp_field_Mobile" name="Mobile" hidden />
+        <input type="text" id="emp_field_DOJ" name="DOJ" hidden />
+        <input type="text" id="emp_field_Bank_Account" name="Bank_Account" hidden />
+        <input type="text" id="emp_field_IFSC_Code" name="IFSC_Code" hidden />
+        <div class="field">
+          <div class="label-row"><label for="emp_field_Adhaar_No">Adhaar No:</label></div>
+          <input type="text" id="emp_field_Adhaar_No" name="Adhaar_No" readonly />
+        </div>
+        <div class="field">
+          <div class="label-row"><label for="emp_field_PAN">PAN:</label></div>
+          <input type="text" id="emp_field_PAN" name="PAN" readonly />
+        </div>
+        <input type="text" id="emp_field_UAN" name="UAN" hidden />
+        <input type="text" id="emp_field_Gender" name="Gender" hidden />
+        <input type="text" id="emp_field_Local_Address" name="Local_Address" hidden />
+        <input type="text" id="emp_field_Permanent_Address" name="Permanent_Address" hidden />
+        <input type="text" id="emp_field_Designation" name="Designation" hidden />
+        <input type="text" id="emp_field_Ver" name="Ver" hidden />
+        <input type="text" id="emp_field_E_ver" name="E_ver" hidden />
+        <input type="text" id="emp_field_P_Estab" name="P_Estab" hidden />
+        <input type="text" id="emp_field_E_Estab" name="E_Estab" hidden />
+        <input type="text" id="emp_field_Religion" name="Religion" hidden />
+      </div>
+
+      <div class="signature-wrapper">
+        <label style="font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Signature:</label>
+        <canvas id="sigCanvas" width="400" height="130"></canvas>
+        <button type="button" class="secondary" style="margin-top: 8px; padding: 6px 12px; font-size: 13px;" onclick="clearSignature('sig')">Clear Signature</button>
+      </div>
+
+      <div class="actions">
+        <button onclick="goToStep2()">Continue &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="step2Window" class="hidden">
+    <h2>Nominee Details</h2>
+    <form id="nomineeForm" onsubmit="goToStep3(event)">
+      <div class="grid">
+        <div class="field">
+          <div class="label-row"><label>Name:</label></div>
+          <input type="text" id="N_Name" required />
+        </div>
+        <div class="field">
+          <div class="label-row"><label>Father/Husband Name:</label></div>
+          <input type="text" id="N_Father_Husband_Name" required />
+        </div>
+        <div class="field">
+          <div class="label-row"><label>Date Of Birth:</label></div>
+          <input type="date" id="N_DOB" required />
+        </div>
+        <div class="field">
+          <div class="label-row"><label>Gender:</label></div>
+          <select id="N_Gender" required>
+            <option value="">--Select--</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="label-row"><label>Marital Status</label></div>
+          <select id="N_Marital_Status" required>
+            <option value="">--Select--</option>
+            <option value="Single">Single</option>
+            <option value="Married">Married</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="label-row"><label>Relation with Employee:</label></div>
+          <select id="N_Relation" required>
+            <option value="">--Select--</option>
+            <option value="father">Father</option>
+            <option value="mother">Mother</option>
+            <option value="brother">Brother</option>
+            <option value="sister">Sister</option>
+            <option value="spouse">Husband / Wife</option>
+            <option value="son">Son</option>
+            <option value="daughter">Daughter</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label title="Same as {{Local_Address}}">Local Address:</label>
+            <label class="toggle-control" title="Toggle same as {{Local_Address}}">
+              <span class="switch">
+                <input type="checkbox" id="toggleLocalAddr" onchange="toggleAddress('Local_Address', 'N_Local_Address', 'toggleLocalAddr', 'stateLocalAddr')" />
+                <span class="slider"></span>
+              </span>
+              <span class="toggle-state" id="stateLocalAddr">Diff.</span>
+            </label>
+          </div>
+          <textarea id="N_Local_Address" rows="2" required></textarea>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label title="Same as {{N_Local_Address}}">Permanent Address:</label>
+            <label class="toggle-control" title="Toggle same as {{N_Local_Address}}">
+              <span class="switch">
+                <input type="checkbox" id="toggleNParmSameAsNLocal" onchange="toggleSameField('N_Local_Address', 'N_Permanent_Address', 'toggleNParmSameAsNLocal', 'stateNParmSameAsNLocal')" />
+                <span class="slider"></span>
+              </span>
+              <span class="toggle-state" id="stateNParmSameAsNLocal">Diff.</span>
+            </label>
+          </div>
+          <textarea id="N_Permanent_Address" rows="2" required></textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="secondary" onclick="backToStep1()">&larr; Back</button>
+        <button type="submit">Continue &rarr;</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="step3Window" class="hidden">
+    <h2>Witness Details</h2>
+    <form id="witnessForm" onsubmit="submitAllData(event)">
+      <h3>Witness 1</h3>
+      <div class="grid">
+        <div class="field">
+          <div class="label-row"><label>Witness Name:</label></div>
+          <input type="text" id="W_Name1" required />
+        </div>
+        <div class="field">
+          <div class="label-row"><label>Witness Address:</label></div>
+          <textarea id="W_Adddress1" rows="2"></textarea>
+        </div>
+      </div>
+
+      <h3>Witness 2</h3>
+      <div class="grid">
+        <div class="field">
+          <div class="label-row"><label>Witness Name:</label></div>
+          <input type="text" id="W_Name2" required />
+        </div>
+        <div class="field">
+          <div class="label-row"><label>Witness Address:</label></div>
+          <textarea id="W_Adddress2" rows="2"></textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="secondary" onclick="backToStep2()">&larr; Back</button>
+        <button type="submit" id="submitBtn">Submit</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="statusBox" class="status hidden"></div>
+</div>
+
+<div id="customAlertModal" class="custom-modal-backdrop hidden">
+  <div class="custom-modal-card">
+    <div class="custom-modal-icon">&#10003;</div>
+    <h3 class="custom-modal-title" id="customAlertTitle">Successfully!</h3>
+    <p class="custom-modal-text" id="customAlertMessage">Submitted Successfully to office.</p>
+    <button type="button" onclick="closeCustomAlert()">OK</button>
+  </div>
+</div>
+
+<script>
+  const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzqoK4jf3EwbzvzFmVvSLqo7PrzZoHhzsTNE2kUCX-Y2mEephz5qz1I_Ak4OsaWxIIdqw/exec";
+
+  let currentEmployeeData = null;
+
+  const EMPLOYEE_FIELDS = [
+    "Employee_ID", "Name", "Father/Husband Name", "DOB", "Marital_Status",
+    "Mobile", "DOJ", "Bank_Account", "IFSC_Code", "Adhaar_No",
+    "PAN", "UAN", "Gender", "Local_Address", "Permanent_Address",
+    "Designation", "Ver", "E_ver", "P_Estab", "E_Estab", "Religion"
+  ];
+
+  async function fetchEmployeeData() {
+    const empId = document.getElementById("empIdInput").value.trim();
+    if (!empId) {
+      showStatus("Please enter your Employee ID.", "error");
+      return;
+    }
+
+    const fetchBtn = document.getElementById("fetchBtn");
+    fetchBtn.disabled = true;
+    showStatus("Please wait...", "info");
+
+    try {
+      const response = await fetch(GAS_WEB_APP_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "fetchEmployee", employeeId: empId })
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        currentEmployeeData = result.data;
+        currentEmployeeData["Permanent_Address"] = currentEmployeeData["Local_Address"] || "";
+        renderEmployeeFields(currentEmployeeData);
+        document.getElementById("searchBar").classList.add("hidden");
+        document.getElementById("empDetailsSection").classList.remove("hidden");
+        hideStatus();
+      } else {
+        document.getElementById("empDetailsSection").classList.add("hidden");
+        document.getElementById("searchBar").classList.remove("hidden");
+        showStatus(result.message || "Employee not found.", "error");
+      }
+    } catch (err) {
+      showStatus("Error connecting to server: " + err.message, "error");
+    } finally {
+      fetchBtn.disabled = false;
+    }
+  }
+
+  function renderEmployeeFields(data) {
+    EMPLOYEE_FIELDS.forEach(field => {
+      const safeId = "emp_field_" + field.replace(/[^a-zA-Z0-9]/g, "_");
+      const input = document.getElementById(safeId);
+      if (input) {
+        input.value = data[field] || "";
+      }
+    });
+  }
+
+  function toggleAddress(empAddressKey, nomineeInputId, checkboxId, labelId) {
+    const checkbox = document.getElementById(checkboxId);
+    const label = document.getElementById(labelId);
+    const textarea = document.getElementById(nomineeInputId);
+
+    if (checkbox.checked) {
+      if (!currentEmployeeData) {
+        checkbox.checked = false;
+        label.textContent = "Diff.";
+        showStatus("Please verify employee details first.", "error");
+        return;
+      }
+      label.textContent = "Same";
+      textarea.value = currentEmployeeData[empAddressKey] || "";
+      textarea.readOnly = true;
+      hideStatus();
+    } else {
+      label.textContent = "Diff.";
+      textarea.readOnly = false;
+      textarea.value = "";
+    }
+  }
+
+  function toggleSameField(sourceInputId, targetInputId, checkboxId, labelId) {
+    const checkbox = document.getElementById(checkboxId);
+    const label = document.getElementById(labelId);
+    const sourceEl = document.getElementById(sourceInputId);
+    const targetEl = document.getElementById(targetInputId);
+
+    if (checkbox.checked) {
+      label.textContent = "Same";
+      targetEl.value = sourceEl.value || "";
+      targetEl.readOnly = true;
+    } else {
+      label.textContent = "Diff.";
+      targetEl.readOnly = false;
+      targetEl.value = "";
+    }
+  }
+
+  function showStep2() {
+    document.getElementById("step1Window").classList.add("hidden");
+    document.getElementById("step3Window").classList.add("hidden");
+    document.getElementById("step2Window").classList.remove("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    hideStatus();
+  }
+
+  function goToStep2() {
+    if (!signedFlags.sig) {
+      showStatus("Please make signature:", "error");
+      return;
+    }
+    showStep2();
+  }
+
+  function backToStep1() {
+    document.getElementById("step2Window").classList.add("hidden");
+    document.getElementById("step3Window").classList.add("hidden");
+    document.getElementById("step1Window").classList.remove("hidden");
+    document.getElementById("searchBar").classList.remove("hidden");
+    document.getElementById("empDetailsSection").classList.add("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    hideStatus();
+  }
+
+  function goToStep3(e) {
+    e.preventDefault();
+    if (!signedFlags.sig) {
+      showStatus("Please make signature!.", "error");
+      return;
+    }
+    document.getElementById("step1Window").classList.add("hidden");
+    document.getElementById("step2Window").classList.add("hidden");
+    document.getElementById("step3Window").classList.remove("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    hideStatus();
+  }
+
+  function backToStep2() {
+    showStep2();
+  }
+
+  function setupCanvas(canvasId, key) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext("2d");
+    let isDrawing = false;
+
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#0000FF";
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+      };
+    }
+
+    function startDraw(e) {
+      isDrawing = true;
+      signedFlags[key] = true;
+      ctx.strokeStyle = "#0000FF";
+      const pos = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+      e.preventDefault();
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const pos = getPos(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+      e.preventDefault();
+    }
+
+    function stopDraw() {
+      isDrawing = false;
+    }
+
+    canvas.addEventListener("mousedown", startDraw);
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("mouseup", stopDraw);
+    canvas.addEventListener("mouseout", stopDraw);
+
+    canvas.addEventListener("touchstart", startDraw, { passive: false });
+    canvas.addEventListener("touchmove", draw, { passive: false });
+    canvas.addEventListener("touchend", stopDraw);
+
+    return { canvas, ctx };
+  }
+
+  const signedFlags = { sig: false };
+  const canvases = {
+    sig: setupCanvas("sigCanvas", "sig")
+  };
+
+  function clearSignature(key) {
+    const item = canvases[key];
+    item.ctx.clearRect(0, 0, item.canvas.width, item.canvas.height);
+    signedFlags[key] = false;
+  }
+
+  function clearEverything() {
+    currentEmployeeData = null;
+    document.getElementById("empIdInput").value = "";
+
+    EMPLOYEE_FIELDS.forEach(field => {
+      const safeId = "emp_field_" + field.replace(/[^a-zA-Z0-9]/g, "_");
+      const input = document.getElementById(safeId);
+      if (input) input.value = "";
+    });
+
+    document.getElementById("nomineeForm").reset();
+    document.getElementById("witnessForm").reset();
+
+    const nLocal = document.getElementById("N_Local_Address");
+    const nPerm = document.getElementById("N_Permanent_Address");
+    nLocal.readOnly = false;
+    nPerm.readOnly = false;
+
+    document.getElementById("toggleLocalAddr").checked = false;
+    document.getElementById("stateLocalAddr").textContent = "Diff.";
+    document.getElementById("toggleNParmSameAsNLocal").checked = false;
+    document.getElementById("stateNParmSameAsNLocal").textContent = "Diff.";
+
+    clearSignature("sig");
+
+    document.getElementById("step2Window").classList.add("hidden");
+    document.getElementById("step3Window").classList.add("hidden");
+    document.getElementById("step1Window").classList.remove("hidden");
+    document.getElementById("searchBar").classList.remove("hidden");
+    document.getElementById("empDetailsSection").classList.add("hidden");
+    hideStatus();
+  }
+
+  function showCustomAlert(message) {
+    document.getElementById("customAlertTitle").textContent = "Successfull!";
+    document.getElementById("customAlertMessage").textContent = message || "Submitted Successfully to office";
+    document.getElementById("customAlertModal").classList.remove("hidden");
+  }
+
+  function closeCustomAlert() {
+    document.getElementById("customAlertModal").classList.add("hidden");
+  }
+
+  async function submitAllData(e) {
+    e.preventDefault();
+
+    if (!signedFlags.sig) {
+      showStatus("Please make signature:", "error");
+      return;
+    }
+
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    showStatus("Submitting now. Please wait...", "info");
+
+    if (currentEmployeeData) {
+      currentEmployeeData["Permanent_Address"] = currentEmployeeData["Local_Address"] || "";
+    }
+
+    const nomineeData = {
+      "N_Name": document.getElementById("N_Name").value.trim(),
+      "N_Father/Husband Name": document.getElementById("N_Father_Husband_Name").value.trim(),
+      "N_DOB": document.getElementById("N_DOB").value,
+      "N_Gender": document.getElementById("N_Gender").value,
+      "N_Marital_Status": document.getElementById("N_Marital_Status").value,
+      "N_Local_Address": document.getElementById("N_Local_Address").value.trim(),
+      "N_Permanent_Address": document.getElementById("N_Permanent_Address").value.trim(),
+      "N_Relation": document.getElementById("N_Relation").value.trim()
+    };
+
+    const witnessData = {
+      "W_Name1": document.getElementById("W_Name1").value.trim(),
+      "W_Adddress1": document.getElementById("W_Adddress1").value.trim(),
+      "W_Name2": document.getElementById("W_Name2").value.trim(),
+      "W_Adddress2": document.getElementById("W_Adddress2").value.trim()
+    };
+
+    const signatureDataUrl = signedFlags.sig ? canvases.sig.canvas.toDataURL("image/png") : "";
+
+    try {
+      const response = await fetch(GAS_WEB_APP_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "generateAndSend",
+          employee: currentEmployeeData,
+          nominee: nomineeData,
+          witness: witnessData,
+          signature: signatureDataUrl
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        clearEverything();
+        showCustomAlert("Submitted Successfully to office");
+      } else {
+        showStatus(result.message || "Failed to submission.", "error");
+      }
+    } catch (err) {
+      showStatus("Error during submission: " + err.message, "error");
+    } finally {
+      submitBtn.disabled = false;
+    }
+  }
+
+  function showStatus(msg, type) {
+    const box = document.getElementById("statusBox");
+    box.textContent = msg;
+    box.className = `status ${type}`;
+    box.classList.remove("hidden");
+  }
+
+  function hideStatus() {
+    document.getElementById("statusBox").classList.add("hidden");
+  }
+</script>
+
+</body>
+</html>
