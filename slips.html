@@ -110,17 +110,16 @@
         <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 text-xs space-y-2">
           <div class="font-semibold text-blue-700 flex items-center justify-between">
             <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i> Demo Credentials:</span>
-            <!--<span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">Testing</span>-->
           </div>
           <div class="space-y-1 text-[11px] text-slate-600">
             <div style="display: grid; grid-template-columns: max-content 1fr; gap: 0 15px; font-family: monospace;">
-              <span><strong>Name</span></strong>: Rakesh Wankhede
-              <span><strong>First letter (Capital)</span></strong>: R
-              <span><strong>3 letters (Small)</span></strong>: ake
-              <span><strong>Aadhaar Last 4 Digits</span></strong>: 5125
-              <span><strong>ID</span></strong>: EMP/PUN00084
-              <span><strong>Password</span></strong>: Rake5125
-	    </div>
+              <span><strong>Name</strong></span>: Rakesh Wankhede
+              <span><strong>First letter (Capital)</strong></span>: R
+              <span><strong>3 letters (Small)</strong></span>: ake
+              <span><strong>Aadhaar Last 4 Digits</strong></span>: [Redacted]
+              <span><strong>ID</strong></span>: EMP/PUN00084
+              <span><strong>Password</strong></span>: Rake5125
+            </div>
           </div>
         </div>
       </div>
@@ -221,16 +220,105 @@
       &copy; 2026 Checkmate Services Private Limited
     </div>
   </div>
-<script src="https://deft-mandazi-14b04b.netlify.app/empdata.js"></script>
-  <script>
 
+  <script>
+    // YAHAN APNA PUBLISHED GOOGLE SHEET CSV LINK PASTE KAREIN
+    const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQKX17BWOMRnPVuF5yP00ABLa2z1IW1gmioUj8eZkEryHSAYFUaO4icIO7k0nWysBGZTlcA7HLacfqR/pub?gid=0&single=true&output=csv";
+
+    let employeeDB = [];
+    let isDataLoaded = false;
+    let loadErrorMessage = "";
     let currentSessionUser = null;
-    
+
     // Inactivity Tracker Variables (120 seconds = 2 minutes)
     const INACTIVITY_LIMIT_SECONDS = 120;
     const WARNING_THRESHOLD_SECONDS = 30;
     let secondsInactive = 0;
     let inactivityTimer = null;
+
+    function isConfiguredSheetUrl(url) {
+      return Boolean(url) && !url.includes("2PACX-1vR...");
+    }
+
+    // Google Sheet se CSV data fetch karein
+    async function loadEmployeeData() {
+      loadErrorMessage = "";
+
+      if (!isConfiguredSheetUrl(GOOGLE_SHEET_CSV_URL)) {
+        loadErrorMessage = "GOOGLE_SHEET_CSV_URL abhi set nahi kiya gaya hai. Apna published CSV link paste karein.";
+        console.warn(loadErrorMessage);
+        return;
+      }
+
+      try {
+        const separator = GOOGLE_SHEET_CSV_URL.includes("?") ? "&" : "?";
+        const response = await fetch(`${GOOGLE_SHEET_CSV_URL}${separator}t=${Date.now()}`);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} - Google Sheet fetch nahi ho paayi.`);
+        }
+
+        const csvText = await response.text();
+        employeeDB = parseCSV(csvText);
+        isDataLoaded = true;
+
+        if (employeeDB.length === 0) {
+          loadErrorMessage = "Sheet load hui par koi employee record nahi mila. Columns (id, name, password) check karein.";
+        }
+      } catch (error) {
+        loadErrorMessage = "Google Sheet se data load nahi ho saka. Publish to web (CSV) aur link check karein.";
+        console.error("Google Sheet load error:", error);
+      }
+    }
+
+    // Quotes aur commas ko handle karke ek CSV line parse karein
+    function parseCSVLine(line) {
+      const values = [];
+      let current = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === "," && !inQuotes) {
+          values.push(current.trim());
+          current = "";
+        } else {
+          current += char;
+        }
+      }
+      values.push(current.trim());
+      return values;
+    }
+
+    // CSV text ko employee records array mein parse karein
+    function parseCSV(csvText) {
+      const lines = csvText.trim().split(/\r?\n/);
+      const result = [];
+
+      // Row 0 headers (id, name, password) hain, isliye index 1 se start karein
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const cols = parseCSVLine(lines[i]);
+
+        if (cols.length >= 3) {
+          const id = cols[0].trim();
+          const name = cols[1].trim();
+          const password = cols[2].trim();
+          if (id && password) {
+            result.push({ id, name, password });
+          }
+        }
+      }
+      return result;
+    }
+
+    window.addEventListener("DOMContentLoaded", loadEmployeeData);
 
     /**
      * Normalizes Employee ID by removing special characters & slashes
@@ -244,11 +332,11 @@
     /**
      * Handle Login Verification
      */
-    function handleLogin(event) {
+    async function handleLogin(event) {
       event.preventDefault();
 
       const inputEmpId = document.getElementById("empId").value.trim();
-      const inputPassword = document.getElementById("password").value;
+      const inputPassword = document.getElementById("password").value.trim();
       const errorBox = document.getElementById("loginError");
       const errorText = document.getElementById("loginErrorText");
 
@@ -260,7 +348,19 @@
         return;
       }
 
-      // Find matching employee record
+      if (!isDataLoaded || employeeDB.length === 0) {
+        errorText.innerText = "Fetching credentials from server, please wait...";
+        errorBox.classList.remove("hidden");
+        await loadEmployeeData();
+        errorBox.classList.add("hidden");
+      }
+
+      if (loadErrorMessage && employeeDB.length === 0) {
+        errorText.innerText = loadErrorMessage;
+        errorBox.classList.remove("hidden");
+        return;
+      }
+
       const matchedEmployee = employeeDB.find(
         emp => emp.id.toUpperCase() === inputEmpId.toUpperCase() && emp.password === inputPassword
       );
@@ -317,11 +417,9 @@
       downloadBtn.classList.add("opacity-60", "cursor-not-allowed");
 
       try {
-        // Fetch file header to verify existence
         const response = await fetch(filePath, { method: "HEAD" });
 
         if (response.ok) {
-          // File exists - Trigger download
           statusBox.className = "p-3.5 rounded-xl border text-xs flex items-center gap-2.5 bg-emerald-50 border-emerald-200 text-emerald-700";
           statusIcon.className = "fa-solid fa-circle-check text-sm shrink-0";
           statusText.innerText = `Downloaded PaySlip for ${month} ${year}...`;
@@ -333,13 +431,11 @@
           anchor.click();
           document.body.removeChild(anchor);
         } else {
-          // File missing
           statusBox.className = "p-3.5 rounded-xl border text-xs flex items-center gap-2.5 bg-amber-50 border-amber-200 text-amber-700";
           statusIcon.className = "fa-solid fa-circle-exclamation text-sm shrink-0";
           statusText.innerText = `PaySlip not found for ${month} ${year}.`;
         }
       } catch (err) {
-        // Error / Local testing limitation
         statusBox.className = "p-3.5 rounded-xl border text-xs flex items-center gap-2.5 bg-red-50 border-red-200 text-red-700";
         statusIcon.className = "fa-solid fa-triangle-exclamation text-sm shrink-0";
         statusText.innerText = "Error accessing PaySlip server.";
@@ -362,7 +458,6 @@
       resetInactivity();
       if (inactivityTimer) clearInterval(inactivityTimer);
 
-      // Listen for user activity
       const activityEvents = ["mousemove", "keydown", "click", "touchstart", "scroll"];
       activityEvents.forEach(evt => {
         window.addEventListener(evt, resetInactivity, { passive: true });
@@ -374,7 +469,6 @@
         secondsInactive++;
         const remainingSeconds = INACTIVITY_LIMIT_SECONDS - secondsInactive;
 
-        // Show countdown warning in the last 30 seconds
         if (remainingSeconds <= WARNING_THRESHOLD_SECONDS && remainingSeconds > 0) {
           const warningBox = document.getElementById("inactivityWarning");
           const countdownText = document.getElementById("inactivityCountdown");
@@ -382,7 +476,6 @@
           countdownText.innerText = `${remainingSeconds}s`;
         }
 
-        // Auto Logout Trigger
         if (secondsInactive >= INACTIVITY_LIMIT_SECONDS) {
           logout("inactivity");
         }
@@ -406,11 +499,9 @@
       currentSessionUser = null;
       stopInactivityTimer();
 
-      // View transitions
       document.getElementById("dashboardSection").classList.add("hidden");
       document.getElementById("loginSection").classList.remove("hidden");
 
-      // Display warning on login screen if logged out due to inactivity
       const errorBox = document.getElementById("loginError");
       const errorText = document.getElementById("loginErrorText");
       
